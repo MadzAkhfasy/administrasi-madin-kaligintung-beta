@@ -16,7 +16,9 @@ const PHOTO_UPLOAD_URL = "https://script.google.com/macros/s/AKfycbyfKk9m9PNhv8q
 
 async function uploadStudentPhoto(file) {
   if (!file) return {};
-
+  
+  throw new Error("Fitur unggah foto sementara dinonaktifkan pada aplikasi Beta.");
+  
   if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
     throw new Error("Foto harus JPG, PNG, atau WebP.");
   }
