@@ -25,7 +25,12 @@ self.addEventListener("activate", event => {
     Promise.all([
       caches.keys().then(keys =>
         Promise.all(
-          keys.filter(key => key !== CACHE).map(key => caches.delete(key))
+          keys
+            .filter(key =>
+              key.startsWith("administrasi-madin-beta-") &&
+              key !== CACHE
+            )
+            .map(key => caches.delete(key))
         )
       ),
       self.clients.claim()
