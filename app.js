@@ -3,12 +3,12 @@ import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from
 import { getFirestore, collection, doc, deleteDoc, getDoc, getDocs, setDoc, addDoc, updateDoc, query, where, serverTimestamp, Timestamp, runTransaction, writeBatch } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
 // GANTI konfigurasi di bawah dengan konfigurasi aplikasi Firebase milik Madin.
 const firebaseConfig = {
-  apiKey: "AIzaSyCpZa_NnbTRGL1GxWS3ti6AKibBLs4rzcU",
-  authDomain: "absensi-madin-kaligintung.firebaseapp.com",
-  projectId: "absensi-madin-kaligintung",
-  storageBucket: "absensi-madin-kaligintung.firebasestorage.app",
-  messagingSenderId: "571440839483",
-  appId: "1:571440839483:web:520afd3af143184e3e151e"
+  apiKey: "AIzaSyCQ6hRETsj0tANwlAOSTJVZaf5Fnr24NC0",
+  authDomain: "absensi-madin-beta.firebaseapp.com",
+  projectId: "absensi-madin-beta",
+  storageBucket: "absensi-madin-beta.firebasestorage.app",
+  messagingSenderId: "743521244447",
+  appId: "1:743521244447:web:1757bcc71c25cedd700c2a"
 };
 const app = initializeApp(firebaseConfig), auth = getAuth(app), db = getFirestore(app);
 const $ = id => document.getElementById(id);
