@@ -1,12 +1,12 @@
 {
-  "name": "Absensi Madin Kaligintung",
-  "short_name": "Absensi Madin",
+  "name": "Administrasi Madin Kaligintung Beta",
+  "short_name": "Madin Neta",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f4f7f5",
   "theme_color": "#176b45",
-  "description": "Aplikasi absensi santri Madin Kaligintung",
+  "description": "Aplikasi uji coba Administrasi Madin Kaligintung",
   "icons": [
     {
       "src": "./icon-192.png",
