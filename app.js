@@ -749,41 +749,111 @@ $("showWritingRecapBtn").onclick = async () => {
       .filter(a =>
         a.assessmentDate &&
         a.assessmentDate.startsWith(month)
-      );
+    );
 
     const recap = {};
+    let maxPage = 0;
 
     assessments.forEach(a => {
+      const page = Number(a.page);
+      const score = Number(a.score);
+
+      if (
+        !a.studentId ||
+        !Number.isInteger(page) ||
+        page < 1 ||
+        !Number.isFinite(score)
+      ) return;
+
       if (!recap[a.studentId]) {
         recap[a.studentId] = {
           total: 0,
-          count: 0
+          count: 0,
+          pages: {}
         };
       }
 
-      recap[a.studentId].total += Number(a.score) || 0;
+      recap[a.studentId].total += score;
       recap[a.studentId].count++;
+      recap[a.studentId].pages[page] = score;
+
+      maxPage = Math.max(maxPage, page);
+    });
+
+    const monthLabel = new Date(
+      Number(month.slice(0, 4)),
+      Number(month.slice(5, 7)) - 1,
+      1
+    ).toLocaleDateString("id-ID", {
+      month: "long",
+      year: "numeric"
     });
 
     let table = `
-      <div style="margin-top:18px;overflow-x:auto">
-        <h3>${esc(selectedClass.name)}</h3>
-        <p class="muted">Rekap bulan ${esc(month)}</p>
+      <div style="margin-top:18px">
 
-        <table style="
-          width:100%;
-          border-collapse:collapse;
-          font-size:13px;
+        <h3 style="margin-bottom:3px">
+          ${esc(selectedClass?.name || "")}
+        </h3>
+
+        <p class="muted" style="margin:0 0 5px">
+          ${esc(monthLabel)}
+        </p>
+
+        <p style="font-size:13px;margin:0 0 12px">
+          Total santri: <strong>${santri.length}</strong>
+        </p>
+
+        <div style="
+          overflow-x:auto;
+          -webkit-overflow-scrolling:touch;
+          border:1px solid #dce6df;
+          border-radius:10px;
         ">
-          <thead>
-            <tr style="background:#104b32;color:white">
-              <th style="padding:10px">No</th>
-              <th style="padding:10px;text-align:left">Nama Santri</th>
-              <th style="padding:10px">Rata-rata</th>
-              <th style="padding:10px">Predikat</th>
-            </tr>
-          </thead>
-          <tbody>
+
+          <table style="
+            width:max-content;
+            min-width:100%;
+            border-collapse:collapse;
+            font-size:12px;
+            white-space:nowrap;
+          ">
+
+            <thead>
+              <tr style="background:#104b32;color:white">
+
+                <th style="padding:7px 8px">No.</th>
+
+                <th style="
+                  padding:7px 8px;
+                  text-align:left;
+                  min-width:145px;
+                ">
+                  Nama Santri
+                </th>
+    `;
+
+    for (let page = 1; page <= maxPage; page++) {
+      table += `
+        <th style="padding:7px 6px;min-width:42px">
+          Hal. ${page}
+        </th>
+      `;
+    }
+
+    table += `
+                <th style="padding:7px 8px">
+                  Rata-rata
+                </th>
+
+                <th style="padding:7px 8px">
+                  Predikat
+                </th>
+
+              </tr>
+            </thead>
+
+            <tbody>
     `;
 
     santri.forEach((s, index) => {
@@ -791,7 +861,7 @@ $("showWritingRecapBtn").onclick = async () => {
 
       let average = null;
       let grade = "-";
-      let description = "Belum ada nilai";
+      let description = "";
 
       if (data && data.count > 0) {
         average = data.total / data.count;
@@ -813,37 +883,97 @@ $("showWritingRecapBtn").onclick = async () => {
         }
       }
 
+      const rowBackground =
+        index % 2 === 0 ? "#ffffff" : "#f1f7f3";
+
       table += `
-        <tr style="border-bottom:1px solid #e5ebe6">
-          <td style="padding:10px;text-align:center">
+        <tr style="
+          background:${rowBackground};
+          border-bottom:1px solid #e5ebe6;
+        ">
+
+          <td style="
+            padding:6px 8px;
+            text-align:center;
+          ">
             ${index + 1}
           </td>
-          <td style="padding:10px">
+
+          <td style="
+            padding:6px 8px;
+            white-space:normal;
+            min-width:145px;
+          ">
             ${esc(s.name || "-")}
           </td>
-          <td style="padding:10px;text-align:center;font-weight:bold">
+      `;
+
+      for (let page = 1; page <= maxPage; page++) {
+        const score = data?.pages?.[page];
+
+        table += `
+          <td style="
+            padding:6px;
+            text-align:center;
+            font-weight:600;
+          ">
+            ${score === undefined ? "" : score}
+          </td>
+        `;
+      }
+
+      table += `
+          <td style="
+            padding:6px 8px;
+            text-align:center;
+            font-weight:700;
+          ">
             ${average === null ? "-" : average.toFixed(2)}
           </td>
-          <td style="padding:10px;text-align:center">
-            <strong>${grade}</strong>
-            <br>
-            <small>${description}</small>
+
+          <td style="
+            padding:6px 8px;
+            text-align:center;
+          ">
+            <strong>
+              ${grade}${description ? " – " + description : ""}
+            </strong>
           </td>
+
         </tr>
       `;
     });
 
     table += `
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+
+        </div>
+
+        ${
+          maxPage === 0
+            ? '<p class="muted">Belum ada nilai pada bulan ini.</p>'
+            : ""
+        }
+
+        <p class="muted" style="
+          font-size:11px;
+          margin-top:10px;
+        ">
+          Keterangan: Kolom nilai kosong menunjukkan santri belum menulis di halaman tersebut.
+        </p>
+
       </div>
     `;
 
     resultBox.innerHTML = table;
-    message.textContent = "Rekap berhasil ditampilkan.";
+
+    message.textContent =
+      "Rekap berhasil ditampilkan.";
 
   } catch (error) {
     console.error(error);
+
     message.textContent =
       "Gagal memuat rekap: " + error.message;
   }
