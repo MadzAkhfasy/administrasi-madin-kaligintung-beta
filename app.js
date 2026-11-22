@@ -804,33 +804,55 @@ $("showWritingRecapBtn").onclick = async () => {
           Total santri: <strong>${santri.length}</strong>
         </p>
 
-        <div style="
-          overflow-x:auto;
-          -webkit-overflow-scrolling:touch;
-          border:1px solid #dce6df;
-          border-radius:10px;
-        ">
+<div style="
+  max-height:65vh;
+  overflow:auto;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+  border:1px solid #dce6df;
+  border-radius:10px;
+">
 
-          <table style="
-            width:max-content;
-            min-width:100%;
-            border-collapse:collapse;
-            font-size:12px;
-            white-space:nowrap;
-          ">
+<table style="
+  width:max-content;
+  min-width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  font-size:12px;
+  white-space:nowrap;
+">
 
             <thead>
               <tr style="background:#104b32;color:white">
 
-                <th style="padding:7px 8px">No.</th>
+                <th style="
+  position:sticky;
+  top:0;
+  left:0;
+  z-index:5;
+  width:42px;
+  min-width:42px;
+  padding:7px 8px;
+  background:#104b32;
+  color:white;
+">
+  No.
+</th>
 
                 <th style="
-                  padding:7px 8px;
-                  text-align:left;
-                  min-width:145px;
-                ">
-                  Nama Santri
-                </th>
+  position:sticky;
+  top:0;
+  left:42px;
+  z-index:5;
+  text-align:left;
+  width:145px;
+  min-width:145px;
+  padding:7px 8px;
+  background:#104b32;
+  color:white;
+">
+  Nama Santri
+</th>
     `;
 
     for (let page = 1; page <= maxPage; page++) {
