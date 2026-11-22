@@ -83,18 +83,16 @@
     const exportContent = sheet.querySelector(".madin-export-content");
     exportContent.appendChild(clone);
 
-    // Legenda warna khusus rekap Membaca Yanbu'a untuk menjelaskan jumlah pengulangan خ.
+    // Legenda dibuat sebagai teks blok sederhana agar selalu ikut PDF dan PNG.
     if (config.type === "reading") {
-      const legend = document.createElement("div");
-      legend.style.cssText = "margin-top:16px;padding:10px 12px;border:1px solid #d9e2dc;border-radius:8px;background:#f8fbf9;color:#17251d;font-size:12px;line-height:1.6";
+      const legend = document.createElement("section");
+      legend.style.cssText = "display:block!important;clear:both;width:100%;box-sizing:border-box;margin:18px 0 4px;padding:12px 14px;border:1px solid #9eaaa2;background:#f7faf8;color:#17251d;font-family:Arial,sans-serif;font-size:12px;line-height:1.7;page-break-inside:avoid";
       legend.innerHTML =
-        '<div style="font-weight:700;margin-bottom:5px">Keterangan warna hasil membaca (pengulangan خ):</div>' +
-        '<div style="display:flex;flex-wrap:wrap;gap:8px 16px">' +
-          '<span><b style="background:#d9f2df;padding:2px 7px;border-radius:4px">ص Hijau</b> Lancar tanpa pengulangan خ.</span>' +
-          '<span><b style="background:#fff1b8;padding:2px 7px;border-radius:4px">ص Kuning</b> Lancar setelah 1 kali خ.</span>' +
-          '<span><b style="background:#ffdfbd;padding:2px 7px;border-radius:4px">ص Oranye</b> Lancar setelah 2 kali خ.</span>' +
-          '<span><b style="background:#ffd6d6;padding:2px 7px;border-radius:4px">ص̲ Merah</b> Belum lancar pada hari ketiga.</span>' +
-        '</div>';
+        '<div style="display:block;font-size:13px;font-weight:700;margin:0 0 6px;color:#104b32">KETERANGAN WARNA PENILAIAN MEMBACA (PENGULANGAN خ)</div>' +
+        '<p style="display:block;margin:3px 0;color:#17251d"><b style="background:#d9f2df;padding:2px 6px">ص — HIJAU:</b> Lancar pada hari pertama, tanpa pengulangan خ.</p>' +
+        '<p style="display:block;margin:3px 0;color:#17251d"><b style="background:#fff1b8;padding:2px 6px">ص — KUNING:</b> Lancar pada hari kedua, setelah 1 kali خ.</p>' +
+        '<p style="display:block;margin:3px 0;color:#17251d"><b style="background:#ffdfbd;padding:2px 6px">ص — ORANYE:</b> Lancar pada hari ketiga, setelah 2 kali خ.</p>' +
+        '<p style="display:block;margin:3px 0;color:#17251d"><b style="background:#ffd6d6;padding:2px 6px">ص̲ — MERAH:</b> Belum lancar pada hari ketiga.</p>';
       exportContent.appendChild(legend);
     }
     return sheet;
