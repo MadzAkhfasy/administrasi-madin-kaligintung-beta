@@ -1050,6 +1050,200 @@ menu.appendChild(divider);
   }
 };
 
+// ======================================
+// PENILAIAN MENULIS ARAB YANBU'A
+// ======================================
+
+function getLocalDateString() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+$("openWritingAssessmentBtn").onclick = () => {
+  const select = $("writingClassSelect");
+
+  if (select.options.length <= 1) {
+    select.innerHTML = '<option value="">Pilih kelas</option>';
+
+    classes
+      .filter(kelas => kelas.name.startsWith("Kelas Jilid"))
+      .forEach(kelas => {
+        const option = document.createElement("option");
+        option.value = kelas.id;
+        option.textContent = kelas.name;
+        select.appendChild(option);
+      });
+  }
+
+  if (!$("writingAssessmentDate").value) {
+    $("writingAssessmentDate").value = getLocalDateString();
+  }
+
+  toggleAssessmentPanel(
+    "writingAssessmentView",
+    "openWritingAssessmentBtn"
+  );
+};
+
+async function loadWritingAssessmentTable() {
+  const classId = $("writingClassSelect").value;
+  const date = $("writingAssessmentDate").value;
+  const list = $("writingStudentList");
+
+  list.innerHTML = "";
+
+  if (!classId || !date) return;
+
+  const selectedClass = classes.find(k => k.id === classId);
+  const pageCount = READING_PAGE_COUNTS[selectedClass?.name] || 0;
+
+  list.innerHTML = "<p class='muted'>Memuat tabel penilaian...</p>";
+
+  try {
+    const santri = students
+      .filter(s => s.classId === classId)
+      .sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+
+    const assessmentSnap = await getDocs(query(
+      collection(db, "writingAssessments"),
+      where("classId", "==", classId)
+    ));
+
+    const assessments = assessmentSnap.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .filter(a => a.assessmentDate === date);
+
+    const latest = {};
+
+    assessments.forEach(a => {
+      latest[a.studentId + "_" + a.page] = a;
+    });
+
+    if (!santri.length) {
+      list.innerHTML = "<p class='muted'>Belum ada santri pada kelas ini.</p>";
+      return;
+    }
+
+    if (!pageCount) {
+      list.innerHTML = "<p class='muted'>Jumlah halaman jilid belum ditentukan.</p>";
+      return;
+    }
+
+    let table = '<style>' +
+      '#writingStudentList .writing-matrix-wrap{max-height:65vh;overflow:auto;border:1px solid #d9e2dc;border-radius:12px;background:#fff;-webkit-overflow-scrolling:touch}' +
+      '#writingStudentList .writing-matrix{border-collapse:separate;border-spacing:0;font-size:12px;white-space:nowrap;min-width:max-content;width:100%}' +
+      '#writingStudentList .writing-matrix th{padding:9px 8px;background:#104b32;color:#fff;font-weight:700;text-align:center}' +
+      '#writingStudentList .writing-matrix .writing-name-head{position:sticky;top:0;left:0;z-index:10;min-width:155px;text-align:left;box-shadow:2px 0 4px rgba(0,0,0,.12)}' +
+      '#writingStudentList .writing-matrix .writing-page-head{position:sticky;top:0;z-index:2;min-width:46px}' +
+      '#writingStudentList .writing-matrix .writing-student-name{position:sticky;left:0;z-index:5;min-width:155px;padding:9px 8px;background:#f1f7f3;color:#174b35;text-align:left;font-size:12px;font-weight:600;border-bottom:1px solid #e5ebe6;box-shadow:2px 0 4px rgba(0,0,0,.08)}' +
+      '#writingStudentList .writing-matrix tbody tr:nth-child(even) .writing-student-name{background:#e5f0e8}' +
+      '#writingStudentList .writing-matrix td{padding:4px;text-align:center;border-bottom:1px solid #e5ebe6;border-left:1px solid #edf1ed;background:#fff}' +
+      '#writingStudentList .writing-score{width:44px;height:36px;padding:2px;border:1px solid #cbd8ce;border-radius:8px;font-size:14px;font-weight:700;color:#174b35;text-align:center;background:#fff}' +
+      '@media(max-width:600px){#writingStudentList .writing-matrix .writing-student-name,#writingStudentList .writing-matrix .writing-name-head{min-width:145px}}' +
+      '</style><div class="writing-matrix-wrap"><table class="writing-matrix"><thead><tr>';
+
+    table += '<th class="writing-name-head">Nama Santri</th>';
+
+    for (let page = 1; page <= pageCount; page++) {
+      table += '<th class="writing-page-head">' + page + '</th>';
+    }
+
+    table += '</tr></thead><tbody>';
+
+    santri.forEach((s, index) => {
+      table += '<tr>';
+      table += '<th class="writing-student-name">' +
+        (index + 1) + '. ' + esc(s.name || "-") + '</th>';
+
+      for (let page = 1; page <= pageCount; page++) {
+        const record = latest[s.id + "_" + page];
+        const score = record?.score ?? "";
+
+        table += '<td><input type="number" class="writing-score"' +
+          ' min="75" max="90" step="1"' +
+          ' value="' + score + '"' +
+          ' data-student="' + s.id + '"' +
+          ' data-page="' + page + '"' +
+          ' placeholder="–"></td>';
+      }
+
+      table += '</tr>';
+    });
+
+    table += '</tbody></table></div>';
+    table += '<p class="muted" style="font-size:11px;margin-top:8px">Masukkan nilai 75–90 pada halaman yang dinilai. Nilai akan disimpan setelah kolom selesai diubah.</p>';
+
+    list.innerHTML = table;
+
+    list.querySelectorAll(".writing-score").forEach(input => {
+      input.onchange = async () => {
+        const rawValue = input.value.trim();
+        const studentId = input.dataset.student;
+        const page = Number(input.dataset.page);
+        const recordId = classId + "_" + studentId + "_" + page + "_" + date;
+
+        if (rawValue === "") {
+          try {
+            await deleteDoc(doc(db, "writingAssessments", recordId));
+            input.style.background = "";
+          } catch (error) {
+            console.error(error);
+            alert("Nilai gagal dihapus. Periksa koneksi internet.");
+          }
+          return;
+        }
+
+        const score = Number(rawValue);
+
+        if (!Number.isInteger(score) || score < 75 || score > 90) {
+          alert("Nilai harus berupa angka bulat antara 75 sampai 90.");
+          input.value = "";
+          input.focus();
+          return;
+        }
+
+        input.disabled = true;
+
+        try {
+          await setDoc(
+            doc(db, "writingAssessments", recordId),
+            {
+              studentId,
+              studentName: santri.find(s => s.id === studentId)?.name || "",
+              classId,
+              className: selectedClass.name,
+              page,
+              score,
+              assessmentDate: date,
+              updatedAt: serverTimestamp()
+            },
+            { merge: true }
+          );
+
+          input.style.background = "#d9f2df";
+        } catch (error) {
+          console.error(error);
+          alert("Nilai gagal disimpan. Periksa koneksi atau izin database.");
+        } finally {
+          input.disabled = false;
+        }
+      };
+    });
+
+  } catch (error) {
+    console.error(error);
+    list.innerHTML =
+      "<p class='muted'>Gagal memuat tabel penilaian: " +
+      esc(error.message || "Kesalahan tidak diketahui") + "</p>";
+  }
+}
+
+$("writingClassSelect").onchange = loadWritingAssessmentTable;
+$("writingAssessmentDate").onchange = loadWritingAssessmentTable;
+
 // MEMUAT JADWAL LIBUR MINGGUAN
 async function loadWeeklySchedule() {
   try {
