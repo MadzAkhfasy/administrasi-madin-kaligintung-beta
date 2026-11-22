@@ -736,9 +736,22 @@
     02. Penilaian Menulis
   </button>
 
-  <div id="writingAssessmentView" class="assessment-accordion-content hidden">
-    <p class="muted">Modul penilaian menulis Arab akan ditampilkan di bagian ini.</p>
-  </div>
+<div id="writingAssessmentView" class="assessment-accordion-content hidden">
+  <h3>Penilaian Menulis Arab</h3>
+  <p class="muted">
+    Penilaian kemampuan menulis Arab santri berdasarkan halaman Yanbu'a.
+  </p>
+
+  <label for="writingClassSelect">Pilih Jilid / Kelas</label>
+  <select id="writingClassSelect">
+    <option value="">Pilih kelas</option>
+  </select>
+
+  <label for="writingAssessmentDate">Tanggal Penilaian</label>
+  <input type="date" id="writingAssessmentDate">
+
+  <div id="writingStudentList"></div>
+</div>
 </div>
 
 <div class="assessment-accordion-item">
