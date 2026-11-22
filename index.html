@@ -756,8 +756,32 @@
 
 <section id="evaluasiBulananPanel" class="panel hidden">
   <div class="card">
-    <h2>Evaluasi Bulanan</h2>
-    <p class="muted">Rekap perkembangan pembelajaran setiap bulan.</p>
+    <h2>Rekap Penilaian Membaca Yanbu'a</h2>
+    <p class="muted">
+      Rekap perkembangan membaca santri berdasarkan hasil penilaian
+      pada bulan yang dipilih.
+    </p>
+
+    <div class="form-grid">
+      <label>
+        Pilih Kelas
+        <select id="readingRecapClass">
+          <option value="">Pilih kelas</option>
+        </select>
+      </label>
+
+      <label>
+        Pilih Bulan
+        <input type="month" id="readingRecapMonth">
+      </label>
+    </div>
+
+    <button type="button" class="primary" id="showReadingRecapBtn">
+      Tampilkan Rekap
+    </button>
+
+    <div id="readingRecapMessage" class="message"></div>
+    <div id="readingRecapResult"></div>
   </div>
 </section>
 
