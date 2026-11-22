@@ -251,6 +251,7 @@ onAuthStateChanged(auth,async user=>{
   if(!p.exists()){await signOut(auth);msg("authMsg","Profil belum dibuat. Hubungi admin.",true);return;}
   profile=p.data();
 await loadClasses();
+setupReadingRecap();
 await loadWeeklySchedule();
 await loadHolidays();
 fillStudentPdfClass();
