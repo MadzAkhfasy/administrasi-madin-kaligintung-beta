@@ -632,7 +632,25 @@ let table = `
         <div style="
           position:sticky;
           left:0;
-          z-index:2;
+          z-index:4;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          width:42px;
+          box-sizing:border-box;
+          padding:11px 4px;
+          background:#f1f7f3;
+          color:#174b35;
+          font-size:13px;
+          font-weight:600;
+          border-right:1px solid #d9e2dc;
+          border-bottom:1px solid #e5ebe6;
+        ">${index + 1}</div>
+
+        <div style="
+          position:sticky;
+          left:42px;
+          z-index:3;
           display:flex;
           align-items:center;
           min-width:0;
@@ -646,9 +664,7 @@ let table = `
           border-right:1px solid #d9e2dc;
           border-bottom:1px solid #e5ebe6;
           overflow-wrap:anywhere;
-        ">
-          ${index + 1}. ${esc(s.name || "-")}
-        </div>
+        ">${esc(s.name || "-")}</div>
       `;
 
       for (let page = 1; page <= farthestPage; page++) {
