@@ -29,7 +29,9 @@
     // Teks dinormalisasi agar tetap terdeteksi meskipun ada spasi atau baris baru dari template.
     clone.querySelectorAll("p, h3, h4, small, div, span").forEach(el => {
       const text = (el.textContent || "").replace(/\s+/g, " ").trim();
-      if (/^rekap\s+bulan\b/i.test(text) && el.children.length === 0) {
+      // Keterangan teknis ini hanya untuk admin/petugas di aplikasi, bukan untuk file ekspor.
+      const internalNote = /^Halaman ditampilkan sampai halaman terjauh yang dicapai pada bulan terpilih\. Sel kosong berarti belum ada hasil penilaian pada bulan tersebut\.?$/i;
+      if ((/^rekap\s+bulan\b/i.test(text) || internalNote.test(text)) && el.children.length === 0) {
         el.remove();
       }
     });
