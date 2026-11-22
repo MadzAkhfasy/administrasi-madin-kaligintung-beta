@@ -25,6 +25,10 @@
       ? classSelect.selectedOptions[0].textContent.trim() : "";
     const month = monthLabel(monthInput ? monthInput.value : "");
     const clone = source.cloneNode(true);
+    // Hilangkan subjudul "Rekap bulan YYYY-MM" dari area isi ekspor; bulan tetap dipilih melalui kontrol rekap.
+    clone.querySelectorAll("p").forEach(p => {
+      if (/^rekap bulan\\s/i.test(p.textContent.trim())) p.remove();
+    });
     clone.removeAttribute("id");
     clone.querySelectorAll("[id]").forEach(el => el.removeAttribute("id"));
 
