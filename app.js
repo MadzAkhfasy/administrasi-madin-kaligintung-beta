@@ -566,20 +566,40 @@ let table = `
         ">
           <div style="
             display:grid;
-            grid-template-columns:minmax(170px,210px) repeat(${farthestPage},54px);
+            grid-template-columns:42px minmax(170px,210px) repeat(${farthestPage},54px);
             width:max-content;
             min-width:100%;
             font-size:13px;
           ">
 
-            <div style="
+                        <div style="
               position:sticky;
               top:0;
               left:0;
-              z-index:4;
+              z-index:6;
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              width:42px;
+              box-sizing:border-box;
               background:#104b32;
               color:white;
+              font-weight:700;
+              border-right:1px solid #47745f;
+              border-bottom:2px solid #c9a64f;
+            ">No.</div>
+
+            <div style="
+              position:sticky;
+              top:0;
+              left:42px;
+              z-index:5;
+              display:flex;
+              align-items:center;
               padding:10px;
+              box-sizing:border-box;
+              background:#104b32;
+              color:white;
               font-weight:700;
               border-right:1px solid #47745f;
               border-bottom:2px solid #c9a64f;
