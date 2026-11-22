@@ -561,13 +561,15 @@ $("showReadingRecapBtn").onclick = async () => {
   -webkit-overflow-scrolling:touch;
 ">
   <table style="
-    border-collapse:separate;
-    border-spacing:0;
-    width:max-content;
-    min-width:100%;
-    font-size:13px;
-    white-space:nowrap;
-  ">
+  border-collapse:separate;
+  border-spacing:0;
+  width:max-content;
+  min-width:100%;
+  font-size:13px;
+  white-space:nowrap;
+  overflow:visible;
+  border-radius:0;
+">
             <thead>
               <tr>
                 <th style="
