@@ -583,14 +583,21 @@ $("showReadingRecapBtn").onclick = async () => {
 
     for (let page = 1; page <= farthestPage; page++) {
       table += `
-        <th style="
-         position:sticky;
-         top:0;
-         background:#104b32;
-         color:white;
-         padding:10px;
-         z-index:2;
-        ">${page}</th>
+        <<th style="
+  position:sticky;
+  top:0;
+  min-width:42px;
+  text-align:center;
+  vertical-align:middle;
+  background:#104b32;
+  color:white;
+  padding:10px 6px;
+  border-right:1px solid #47745f;
+  border-bottom:2px solid #c9a64f;
+  font-size:13px;
+  font-weight:600;
+  z-index:2;
+">${page}</th>
       `;
     }
 
