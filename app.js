@@ -604,15 +604,18 @@ $("showReadingRecapBtn").onclick = async () => {
       for (let page = 1; page <= farthestPage; page++) {
         const value = latest[s.id + "_" + page];
 
-        let symbol = "";
-        let symbolStyle = "";
-        let background = "#fff";
+        let symbolMarkup = "";
+let background = "#fff";
 
-        if (value) {
-          symbol = "ص";
-          if (value.result === "red") {
-  symbolStyle = "text-decoration:underline;text-decoration-color:#c62828;text-decoration-thickness:2px;text-underline-offset:6px;";
-          }
+if (value) {
+  if (value.result === "red") {
+    symbolMarkup = '<span style="display:inline-block;position:relative;padding-bottom:4px">ص<span style="position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:16px;border-bottom:2px solid #c62828"></span></span>';
+  } else {
+    symbolMarkup = "ص";
+  }
+
+  background = colors[value.result] || "#fff";
+}
 
           background = colors[value.result] || "#fff";
         }
@@ -626,7 +629,7 @@ $("showReadingRecapBtn").onclick = async () => {
             font-weight:bold;
             background:${background};
             border:1px solid #edf1ed;
-          "><span style="${symbolStyle}">${symbol}</span></td>
+          ">${symbolMarkup}</td>
         `;
       }
 
