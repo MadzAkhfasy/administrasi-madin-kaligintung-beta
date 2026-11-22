@@ -600,15 +600,23 @@ $("showReadingRecapBtn").onclick = async () => {
       table += `
         <tr>
           <th style="
-            position:sticky;
-            left:0;
-            background:#f1f7f3;
-            color:#174b35;
-            text-align:left;
-            padding:9px;
-            border-bottom:1px solid #e5ebe6;
-            z-index:1;
-          ">
+  position:sticky;
+  left:0;
+  min-width:170px;
+  max-width:210px;
+  background:#f1f7f3;
+  color:#174b35;
+  text-align:left;
+  white-space:normal;
+  line-height:1.4;
+  font-size:13px;
+  font-weight:600;
+  padding:11px 10px;
+  border-bottom:1px solid #e5ebe6;
+  border-right:1px solid #d9e2dc;
+  vertical-align:middle;
+  z-index:1;
+">
             ${index + 1}. ${esc(s.name || "-")}
           </th>
       `;
