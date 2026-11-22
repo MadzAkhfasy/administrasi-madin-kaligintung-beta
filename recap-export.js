@@ -25,9 +25,13 @@
       ? classSelect.selectedOptions[0].textContent.trim() : "";
     const month = monthLabel(monthInput ? monthInput.value : "");
     const clone = source.cloneNode(true);
-    // Hilangkan subjudul "Rekap bulan YYYY-MM" dari area isi ekspor; bulan tetap dipilih melalui kontrol rekap.
-    clone.querySelectorAll("p").forEach(p => {
-      if (/^rekap bulan\s/i.test(p.textContent.trim())) p.remove();
+    // Hilangkan baris "Rekap bulan YYYY-MM" dari salinan ekspor PDF maupun PNG.
+    // Teks dinormalisasi agar tetap terdeteksi meskipun ada spasi atau baris baru dari template.
+    clone.querySelectorAll("p, h3, h4, small, div, span").forEach(el => {
+      const text = (el.textContent || "").replace(/\s+/g, " ").trim();
+      if (/^rekap\s+bulan\b/i.test(text) && el.children.length === 0) {
+        el.remove();
+      }
     });
     clone.removeAttribute("id");
     clone.querySelectorAll("[id]").forEach(el => el.removeAttribute("id"));
