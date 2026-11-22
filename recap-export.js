@@ -172,7 +172,7 @@
     sheet.id = "madin-png-sheet";
     sheet.style.cssText =
       "position:absolute;left:0;top:0;z-index:2147483000;display:block;" +
-      "width:max-content;max-width:none;height:auto;max-height:none;overflow:visible;" +
+      "width:max-content;max-width:none;height:auto;max-height:none;overflow:visible;padding:30px;box-sizing:border-box;" +
       "background:#fff;";
     document.body.appendChild(sheet);
 
