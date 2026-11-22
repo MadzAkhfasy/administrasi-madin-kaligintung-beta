@@ -545,75 +545,7 @@ $("showReadingRecapBtn").onclick = async () => {
       red: "#ffd6d6"
     };
 
-    let table = `
-      <div style="margin-top:18px">
-        <h3>${esc(selectedClass.name)}</h3>
-        <p class="muted">
-          Rekap bulan ${esc(month)}
-        </p>
-
-<div style="
-  max-height:65vh;
-  overflow:auto;
-  border:1px solid #d9e2dc;
-  border-radius:12px;
-  background:#fff;
-  -webkit-overflow-scrolling:touch;
-">
-  <table style="
-  border-collapse:separate;
-  border-spacing:0;
-  width:max-content;
-  min-width:100%;
-  font-size:13px;
-  white-space:nowrap;
-  overflow:visible;
-  border-radius:0;
-">
-            <thead>
-              <tr>
-                <th style="
-                  position:sticky;
-                  top:0;
-                  left:0;
-                  background:#104b32;
-                  color:white;
-                  padding:10px;
-                  z-index:3;
-                ">Nama Santri</th>
-    `;
-
-    for (let page = 1; page <= farthestPage; page++) {
-      table += `
-        <th style="
-  position:sticky;
-  top:0;
-  min-width:42px;
-  text-align:center;
-  vertical-align:middle;
-  background:#104b32;
-  color:white;
-  padding:10px 6px;
-  border-right:1px solid #47745f;
-  border-bottom:2px solid #c9a64f;
-  font-size:13px;
-  font-weight:600;
-  z-index:2;
-">${page}</th>
-      `;
-    }
-
-    table += "</tr></thead><tbody>";
-
-    santri.forEach((s, index) => {
-      table += `
-        <tr>
-          <th style="
-  position:sticky;
-  left:0;
-  min-width:170px;
-  max-width:210px;
-  background:#f1f7f3;
+;
 
 let table = `
       <div style="margin-top:18px">
@@ -743,6 +675,9 @@ let table = `
         </p>
       </div>
     `;
+
+
+
 
     resultBox.innerHTML = table;
     message.textContent = "Rekap berhasil ditampilkan.";
