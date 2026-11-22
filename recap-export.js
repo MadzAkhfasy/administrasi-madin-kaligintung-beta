@@ -43,8 +43,24 @@
     });
 
     if (format === "pdf") {
-      clone.querySelectorAll('span[style*="padding-bottom:4px"]').forEach(el => { el.style.position = "relative"; });
-      clone.querySelectorAll('span[style*="border-bottom:2px solid #c62828"]').forEach(el => { el.style.position = "absolute"; });
+      clone.querySelectorAll('span[style*="padding-bottom:4px"]').forEach(el => {
+        el.style.position = "relative";
+        el.style.display = "inline-block";
+        el.style.paddingBottom = "4px";
+        el.style.overflow = "visible";
+      });
+      clone.querySelectorAll('span[style*="border-bottom:2px solid #c62828"]').forEach(el => {
+        el.style.position = "absolute";
+        el.style.display = "block";
+        el.style.left = "50%";
+        el.style.bottom = "0";
+        el.style.top = "auto";
+        el.style.transform = "translateX(-50%)";
+        el.style.width = "16px";
+        el.style.borderBottom = "2px solid #c62828";
+        el.style.opacity = "1";
+        el.style.visibility = "visible";
+      });
     }
 
     const sheet = document.createElement("div");
