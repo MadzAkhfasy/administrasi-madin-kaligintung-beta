@@ -42,8 +42,10 @@
       el.style.webkitOverflowScrolling = "auto";
     });
 
-    clone.querySelectorAll('span[style*="padding-bottom:4px"]').forEach(el => { el.style.position = "relative"; });
-    clone.querySelectorAll('span[style*="border-bottom:2px solid #c62828"]').forEach(el => { el.style.position = "absolute"; });
+    if (format === "pdf") {
+      clone.querySelectorAll('span[style*="padding-bottom:4px"]').forEach(el => { el.style.position = "relative"; });
+      clone.querySelectorAll('span[style*="border-bottom:2px solid #c62828"]').forEach(el => { el.style.position = "absolute"; });
+    }
 
     const sheet = document.createElement("div");
     sheet.className = "madin-export-sheet madin-export-" + format;
@@ -67,8 +69,11 @@
     style.id = "madin-export-styles";
     style.textContent =
       ".madin-export-sheet{box-sizing:border-box;display:block;width:max-content;min-width:100%;padding:22px;background:#fff;color:#17251d;font-family:Arial,sans-serif}" +
-      ".madin-export-header{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;border-bottom:3px solid #c9a64f;padding:0 0 14px;margin:0 0 16px;background:#fff}" +
-      ".madin-export-header img{display:block;width:76px;height:76px;object-fit:contain;margin:0 auto}" +
+      ".madin-export-header{display:flex;align-items:center;gap:16px;border-bottom:3px solid #c9a64f;padding:0 0 14px;margin:0 0 16px;background:#fff}" +
+      ".madin-export-header img{width:76px;height:76px;object-fit:contain}" +
+      ".madin-export-pdf .madin-export-header{flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center}" +
+      ".madin-export-pdf .madin-export-header img{display:block;margin:0 auto}" +
+      ".madin-export-pdf .madin-export-heading{text-align:center;width:100%}" +
       ".madin-export-madin{font-size:20px;font-weight:800;color:#104b32;letter-spacing:.4px}" +
       ".madin-export-title{font-size:15px;font-weight:700;margin-top:5px;color:#17251d}" +
       ".madin-export-meta{font-size:13px;margin-top:5px;color:#17251d}" +
