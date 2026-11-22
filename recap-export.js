@@ -83,16 +83,18 @@
     const exportContent = sheet.querySelector(".madin-export-content");
     exportContent.appendChild(clone);
 
-    // Legenda dibuat sebagai teks blok sederhana agar selalu ikut PDF dan PNG.
+    // Legenda ringkas: kotak simbol berwarna dengan keterangan di sampingnya.
     if (config.type === "reading") {
       const legend = document.createElement("section");
-      legend.style.cssText = "display:block!important;clear:both;width:100%;box-sizing:border-box;margin:18px 0 4px;padding:12px 14px;border:1px solid #9eaaa2;background:#f7faf8;color:#17251d;font-family:Arial,sans-serif;font-size:12px;line-height:1.7;page-break-inside:avoid";
+      legend.style.cssText = "display:block!important;clear:both;width:100%;box-sizing:border-box;margin:14px 0 2px;padding:8px 10px;border:1px solid #d9e2dc;background:#f8fbf9;color:#17251d;font-family:Arial,sans-serif;font-size:12px;line-height:1.4;page-break-inside:avoid";
       legend.innerHTML =
-        '<div style="display:block;font-size:13px;font-weight:700;margin:0 0 6px;color:#104b32">KETERANGAN WARNA PENILAIAN MEMBACA (PENGULANGAN خ)</div>' +
-        '<p style="display:block;margin:3px 0;color:#17251d"><b style="background:#d9f2df;padding:2px 6px">ص — HIJAU:</b> Lancar pada hari pertama, tanpa pengulangan خ.</p>' +
-        '<p style="display:block;margin:3px 0;color:#17251d"><b style="background:#fff1b8;padding:2px 6px">ص — KUNING:</b> Lancar pada hari kedua, setelah 1 kali خ.</p>' +
-        '<p style="display:block;margin:3px 0;color:#17251d"><b style="background:#ffdfbd;padding:2px 6px">ص — ORANYE:</b> Lancar pada hari ketiga, setelah 2 kali خ.</p>' +
-        '<p style="display:block;margin:3px 0;color:#17251d"><b style="background:#ffd6d6;padding:2px 6px">ص̲ — MERAH:</b> Belum lancar pada hari ketiga.</p>';
+        '<div style="font-weight:700;margin-bottom:6px;color:#104b32">Keterangan:</div>' +
+        '<div style="display:flex;flex-wrap:wrap;align-items:center;gap:7px 18px">' +
+          '<span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap"><b style="display:inline-flex;align-items:center;justify-content:center;width:27px;height:25px;box-sizing:border-box;border:1px solid #b7c9bd;border-radius:3px;background:#d9f2df;font-size:16px">ص</b> Lancar</span>' +
+          '<span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap"><b style="display:inline-flex;align-items:center;justify-content:center;width:27px;height:25px;box-sizing:border-box;border:1px solid #b7c9bd;border-radius:3px;background:#fff1b8;font-size:16px">ص</b> Diulang sekali</span>' +
+          '<span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap"><b style="display:inline-flex;align-items:center;justify-content:center;width:27px;height:25px;box-sizing:border-box;border:1px solid #b7c9bd;border-radius:3px;background:#ffdfbd;font-size:16px">ص</b> Diulang dua kali</span>' +
+          '<span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap"><b style="display:inline-flex;align-items:center;justify-content:center;width:27px;height:25px;box-sizing:border-box;border:1px solid #b7c9bd;border-radius:3px;background:#ffd6d6;font-size:16px;text-decoration:underline;text-decoration-color:#c62828;text-decoration-thickness:2px;text-underline-offset:3px">ص</b> Diulang tiga kali</span>' +
+        '</div>';
       exportContent.appendChild(legend);
     }
     return sheet;
