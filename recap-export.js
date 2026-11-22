@@ -42,7 +42,7 @@
       el.style.webkitOverflowScrolling = "auto";
     });
 
-    if (format === "pdf") {
+    if (format === "pdf" || format === "png") {
       // Sisakan jarak nyata antara huruf dan garis bawah agar tidak menempel.
       clone.querySelectorAll('span[style*="padding-bottom"]').forEach(el => {
         const underline = el.querySelector("span");
@@ -81,9 +81,9 @@
       ".madin-export-header{display:flex;align-items:center;gap:16px;border-bottom:3px solid #c9a64f;padding:0 0 14px;margin:0 0 16px;background:#fff}" +
       ".madin-export-brand{display:flex;align-items:center;gap:16px;width:max-content;max-width:100%;margin:0 auto}" +
       ".madin-export-header img{display:block;flex:0 0 76px;width:76px;height:76px;object-fit:contain;margin:0}" +
-      ".madin-export-pdf .madin-export-header{justify-content:center;text-align:center}" +
-      ".madin-export-pdf .madin-export-brand{justify-content:center}" +
-      ".madin-export-pdf .madin-export-heading{text-align:center;flex:0 1 auto;min-width:0}" +
+      ".madin-export-sheet .madin-export-header{justify-content:center;text-align:center}" +
+      ".madin-export-sheet .madin-export-brand{justify-content:center}" +
+      ".madin-export-sheet .madin-export-heading{text-align:center;flex:0 1 auto;min-width:0}" +
       ".madin-export-madin{font-size:20px;font-weight:800;color:#104b32;letter-spacing:.4px}" +
       ".madin-export-title{font-size:15px;font-weight:700;margin-top:5px;color:#17251d}" +
       ".madin-export-meta{font-size:13px;margin-top:5px;color:#17251d}" +
