@@ -48,6 +48,12 @@
     const popup = window.open("", "_blank");
     if (!popup) throw new Error("Jendela cetak diblokir browser. Izinkan pop-up untuk situs aplikasi, lalu coba lagi.");
     const wrapper = makeExportDocument(config);
+    wrapper.style.position = "absolute"; wrapper.style.left = "-100000px"; wrapper.style.top = "0";
+    document.body.appendChild(wrapper);
+    const contentWidth = Math.max(wrapper.scrollWidth, 1);
+    wrapper.style.zoom = Math.min(1, 1050 / contentWidth);
+    const exportHtml = wrapper.outerHTML;
+    wrapper.remove();
     popup.document.open();
     popup.document.write('<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' +
       config.title + '</title><style>' + exportCss() +
@@ -70,7 +76,7 @@
   async function savePng(config) {
     const html2canvas = await loadHtml2Canvas();
     const wrapper = makeExportDocument(config);
-    wrapper.style.position = "fixed"; wrapper.style.left = "-100000px"; wrapper.style.top = "0"; wrapper.style.zIndex = "-1";
+    wrapper.style.position = "fixed"; wrapper.style.left = "0"; wrapper.style.top = "0"; wrapper.style.opacity = "0.01"; wrapper.style.zIndex = "-1"; wrapper.style.pointerEvents = "none";
     document.body.appendChild(wrapper);
     try {
       const logo = wrapper.querySelector("img");
