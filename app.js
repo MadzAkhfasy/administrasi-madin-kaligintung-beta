@@ -552,14 +552,22 @@ $("showReadingRecapBtn").onclick = async () => {
           Rekap bulan ${esc(month)}
         </p>
 
-        <div style="overflow-x:auto;border:1px solid #d9e2dc;border-radius:12px">
-          <table style="
-            border-collapse:collapse;
-            width:100%;
-            min-width:max-content;
-            font-size:12px;
-            white-space:nowrap;
-          ">
+<div style="
+  max-height:65vh;
+  overflow:auto;
+  border:1px solid #d9e2dc;
+  border-radius:12px;
+  background:#fff;
+  -webkit-overflow-scrolling:touch;
+">
+  <table style="
+    border-collapse:separate;
+    border-spacing:0;
+    width:max-content;
+    min-width:100%;
+    font-size:13px;
+    white-space:nowrap;
+  ">
             <thead>
               <tr>
                 <th style="
