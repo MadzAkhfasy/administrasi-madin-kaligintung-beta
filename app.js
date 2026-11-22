@@ -645,14 +645,17 @@ if (value) {
 }
         table += `
           <td style="
-            text-align:center;
-            padding:7px;
-            min-width:32px;
-            font-size:17px;
-            font-weight:bold;
-            background:${background};
-            border:1px solid #edf1ed;
-          ">${symbolMarkup}</td>
+  text-align:center;
+  vertical-align:middle;
+  padding:8px 6px;
+  min-width:42px;
+  font-size:18px;
+  font-weight:bold;
+  color:#174b35;
+  background:${background};
+  border-right:1px solid #e5ebe6;
+  border-bottom:1px solid #e5ebe6;
+">${symbolMarkup}</td>
         `;
       }
 
