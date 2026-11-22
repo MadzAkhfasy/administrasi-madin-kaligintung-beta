@@ -789,7 +789,7 @@ $("showWritingRecapBtn").onclick = async () => {
       year: "numeric"
     });
 
-    let table = `
+      let table = `
       <div style="margin-top:18px">
 
         <h3 style="margin-bottom:3px">
@@ -804,78 +804,104 @@ $("showWritingRecapBtn").onclick = async () => {
           Total santri: <strong>${santri.length}</strong>
         </p>
 
-<div style="
-  max-height:65vh;
-  overflow:auto;
-  -webkit-overflow-scrolling:touch;
-  overscroll-behavior:contain;
-  border:1px solid #dce6df;
-  border-radius:10px;
-">
+        <div style="
+          max-height:65vh;
+          overflow:auto;
+          border:1px solid #d9e2dc;
+          border-radius:12px;
+          background:#fff;
+          -webkit-overflow-scrolling:touch;
+          overscroll-behavior:contain;
+        ">
 
-<table style="
-  width:max-content;
-  min-width:100%;
-  border-collapse:separate;
-  border-spacing:0;
-  font-size:12px;
-  white-space:nowrap;
-">
+          <div style="
+            display:grid;
+            grid-template-columns:42px 145px repeat(${maxPage},54px) 82px 150px;
+            width:max-content;
+            min-width:100%;
+            font-size:12px;
+          ">
 
-            <thead>
-              <tr style="background:#104b32;color:white">
+            <div style="
+              position:sticky;
+              top:0;
+              left:0;
+              z-index:6;
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              background:#104b32;
+              color:white;
+              padding:8px 4px;
+              border-right:1px solid #47745f;
+              border-bottom:2px solid #c9a64f;
+              font-weight:700;
+            ">No.</div>
 
-                <th style="
-  position:sticky;
-  top:0;
-  left:0;
-  z-index:5;
-  width:42px;
-  min-width:42px;
-  padding:7px 8px;
-  background:#104b32;
-  color:white;
-">
-  No.
-</th>
-
-                <th style="
-  position:sticky;
-  top:0;
-  left:42px;
-  z-index:5;
-  text-align:left;
-  width:145px;
-  min-width:145px;
-  padding:7px 8px;
-  background:#104b32;
-  color:white;
-">
-  Nama Santri
-</th>
+            <div style="
+              position:sticky;
+              top:0;
+              left:42px;
+              z-index:6;
+              display:flex;
+              align-items:center;
+              background:#104b32;
+              color:white;
+              padding:8px;
+              border-right:1px solid #47745f;
+              border-bottom:2px solid #c9a64f;
+              font-weight:700;
+            ">Nama Santri</div>
     `;
 
     for (let page = 1; page <= maxPage; page++) {
       table += `
-        <th style="padding:7px 6px;min-width:42px">
-          Hal. ${page}
-        </th>
+        <div style="
+          position:sticky;
+          top:0;
+          z-index:4;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          min-width:54px;
+          padding:8px 4px;
+          background:#104b32;
+          color:white;
+          border-right:1px solid #47745f;
+          border-bottom:2px solid #c9a64f;
+          font-weight:700;
+        ">Hal. ${page}</div>
       `;
     }
 
     table += `
-                <th style="padding:7px 8px">
-                  Rata-rata
-                </th>
+            <div style="
+              position:sticky;
+              top:0;
+              z-index:4;
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              padding:8px 4px;
+              background:#104b32;
+              color:white;
+              border-bottom:2px solid #c9a64f;
+              font-weight:700;
+            ">Rata-rata</div>
 
-                <th style="padding:7px 8px">
-                  Predikat
-                </th>
-
-              </tr>
-            </thead>
-
-            <tbody>
+            <div style="
+              position:sticky;
+              top:0;
+              z-index:4;
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              padding:8px 4px;
+              background:#104b32;
+              color:white;
+              border-bottom:2px solid #c9a64f;
+              font-weight:700;
+            ">Predikat</div>
     `;
 
     santri.forEach((s, index) => {
@@ -909,82 +935,84 @@ $("showWritingRecapBtn").onclick = async () => {
         index % 2 === 0 ? "#ffffff" : "#f1f7f3";
 
       table += `
-        <tr style="
+        <div style="
+          position:sticky;
+          left:0;
+          z-index:3;
+          display:flex;
+          align-items:center;
+          justify-content:center;
           background:${rowBackground};
+          color:#174b35;
+          padding:8px 4px;
+          border-right:1px solid #d9e2dc;
           border-bottom:1px solid #e5ebe6;
-        ">
+        ">${index + 1}</div>
 
-          <td style="
-  position:sticky;
-  left:0;
-  z-index:2;
-  width:42px;
-  min-width:42px;
-  padding:6px 8px;
-  text-align:center;
-  background:${rowBackground};
-  border-bottom:1px solid #e5ebe6;
-">
-  ${index + 1}
-</td>
-
-<td style="
-  position:sticky;
-  left:42px;
-  z-index:2;
-  width:145px;
-  min-width:145px;
-  max-width:145px;
-  padding:6px 8px;
-  white-space:normal;
-  background:${rowBackground};
-  border-right:1px solid #d9e2dc;
-  border-bottom:1px solid #e5ebe6;
-">
-  ${esc(s.name || "-")}
-</td>
+        <div style="
+          position:sticky;
+          left:42px;
+          z-index:3;
+          display:flex;
+          align-items:center;
+          min-width:0;
+          white-space:normal;
+          overflow-wrap:anywhere;
+          background:${rowBackground};
+          color:#174b35;
+          padding:8px;
+          border-right:1px solid #d9e2dc;
+          border-bottom:1px solid #e5ebe6;
+          font-weight:600;
+        ">${esc(s.name || "-")}</div>
       `;
 
       for (let page = 1; page <= maxPage; page++) {
         const score = data?.pages?.[page];
 
         table += `
-          <td style="
-            padding:6px;
-            text-align:center;
+          <div style="
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            min-width:54px;
+            padding:8px 4px;
+            background:${rowBackground};
+            border-right:1px solid #e5ebe6;
+            border-bottom:1px solid #e5ebe6;
             font-weight:600;
-          ">
-            ${score === undefined ? "" : score}
-          </td>
+          ">${score === undefined ? "" : score}</div>
         `;
       }
 
       table += `
-          <td style="
-            padding:6px 8px;
-            text-align:center;
-            font-weight:700;
-          ">
-            ${average === null ? "-" : average.toFixed(2)}
-          </td>
+        <div style="
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          padding:8px 4px;
+          background:${rowBackground};
+          border-bottom:1px solid #e5ebe6;
+          font-weight:700;
+        ">${average === null ? "-" : average.toFixed(2)}</div>
 
-          <td style="
-            padding:6px 8px;
-            text-align:center;
-          ">
-            <strong>
-              ${grade}${description ? " – " + description : ""}
-            </strong>
-          </td>
-
-        </tr>
+        <div style="
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          padding:8px 4px;
+          background:${rowBackground};
+          border-bottom:1px solid #e5ebe6;
+          text-align:center;
+          white-space:normal;
+        ">
+          <strong>${grade}${description ? " – " + description : ""}</strong>
+        </div>
       `;
     });
 
     table += `
-            </tbody>
-          </table>
-
+          </div>
         </div>
 
         ${
@@ -1002,7 +1030,6 @@ $("showWritingRecapBtn").onclick = async () => {
 
       </div>
     `;
-
     resultBox.innerHTML = table;
 
     message.textContent =
