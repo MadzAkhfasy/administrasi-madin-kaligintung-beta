@@ -608,9 +608,7 @@ $("showReadingRecapBtn").onclick = async () => {
         let background = "#fff";
 
         if (value) {
-          symbol = value.result === "red"
-            ? "ص̲"
-            : "ص";
+          symbol = "ص";
 
           background = colors[value.result] || "#fff";
         }
@@ -949,7 +947,7 @@ menu.appendChild(divider);
     const deleteButton = document.createElement("button");
     deleteButton.type = "button";
     deleteButton.className = "reading-score-delete";
-    deleteButton.textContent = "✕ Hapus";
+    deleteButton.textContent = "✕";
     deleteButton.style.cssText = "width:100%;padding:7px 3px;margin:2px 0;border:0;border-radius:7px;background:#fff0f0;color:#c62828;font-size:12px;font-weight:700;";
 
     deleteButton.onclick = async () => {
@@ -980,7 +978,7 @@ menu.appendChild(divider);
         console.error(error);
         alert("Nilai gagal dihapus. Periksa koneksi internet.");
         deleteButton.disabled = false;
-        deleteButton.textContent = "✕ Hapus";
+        deleteButton.textContent = "✕";
       }
     };
 
