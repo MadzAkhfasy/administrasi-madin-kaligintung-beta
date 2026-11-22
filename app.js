@@ -690,6 +690,165 @@ let table = `
   }
 };
 
+// ======================================
+// REKAP BULANAN PENILAIAN MENULIS ARAB
+// ======================================
+
+function setupWritingRecap() {
+  const classSelect = $("writingRecapClass");
+  const monthInput = $("writingRecapMonth");
+
+  classSelect.innerHTML = '<option value="">Pilih kelas</option>';
+
+  classes
+    .filter(k => k.name.startsWith("Kelas Jilid"))
+    .forEach(k => {
+      const option = document.createElement("option");
+      option.value = k.id;
+      option.textContent = k.name;
+      classSelect.appendChild(option);
+    });
+
+  monthInput.value = new Date()
+    .toLocaleDateString("sv-SE")
+    .slice(0, 7);
+}
+
+$("showWritingRecapBtn").onclick = async () => {
+  const classId = $("writingRecapClass").value;
+  const month = $("writingRecapMonth").value;
+  const resultBox = $("writingRecapResult");
+  const message = $("writingRecapMessage");
+
+  resultBox.innerHTML = "";
+  message.textContent = "";
+
+  if (!classId || !month) {
+    message.textContent = "Silakan pilih kelas dan bulan.";
+    return;
+  }
+
+  message.textContent = "Menghitung rekap nilai...";
+
+  try {
+    const selectedClass = classes.find(k => k.id === classId);
+
+    const santri = students
+      .filter(s => s.classId === classId)
+      .sort((a, b) =>
+        (a.name || "").localeCompare(b.name || "")
+      );
+
+    const snap = await getDocs(query(
+      collection(db, "writingAssessments"),
+      where("classId", "==", classId)
+    ));
+
+    const assessments = snap.docs
+      .map(d => d.data())
+      .filter(a =>
+        a.assessmentDate &&
+        a.assessmentDate.startsWith(month)
+      );
+
+    const recap = {};
+
+    assessments.forEach(a => {
+      if (!recap[a.studentId]) {
+        recap[a.studentId] = {
+          total: 0,
+          count: 0
+        };
+      }
+
+      recap[a.studentId].total += Number(a.score) || 0;
+      recap[a.studentId].count++;
+    });
+
+    let table = `
+      <div style="margin-top:18px;overflow-x:auto">
+        <h3>${esc(selectedClass.name)}</h3>
+        <p class="muted">Rekap bulan ${esc(month)}</p>
+
+        <table style="
+          width:100%;
+          border-collapse:collapse;
+          font-size:13px;
+        ">
+          <thead>
+            <tr style="background:#104b32;color:white">
+              <th style="padding:10px">No</th>
+              <th style="padding:10px;text-align:left">Nama Santri</th>
+              <th style="padding:10px">Rata-rata</th>
+              <th style="padding:10px">Predikat</th>
+            </tr>
+          </thead>
+          <tbody>
+    `;
+
+    santri.forEach((s, index) => {
+      const data = recap[s.id];
+
+      let average = null;
+      let grade = "-";
+      let description = "Belum ada nilai";
+
+      if (data && data.count > 0) {
+        average = data.total / data.count;
+
+        const rounded = Math.floor(average);
+
+        if (rounded >= 88) {
+          grade = "A";
+          description = "Sangat Baik";
+        } else if (rounded >= 83) {
+          grade = "B";
+          description = "Baik";
+        } else if (rounded >= 76) {
+          grade = "C";
+          description = "Cukup";
+        } else {
+          grade = "D";
+          description = "Perlu Bimbingan";
+        }
+      }
+
+      table += `
+        <tr style="border-bottom:1px solid #e5ebe6">
+          <td style="padding:10px;text-align:center">
+            ${index + 1}
+          </td>
+          <td style="padding:10px">
+            ${esc(s.name || "-")}
+          </td>
+          <td style="padding:10px;text-align:center;font-weight:bold">
+            ${average === null ? "-" : average.toFixed(2)}
+          </td>
+          <td style="padding:10px;text-align:center">
+            <strong>${grade}</strong>
+            <br>
+            <small>${description}</small>
+          </td>
+        </tr>
+      `;
+    });
+
+    table += `
+          </tbody>
+        </table>
+      </div>
+    `;
+
+    resultBox.innerHTML = table;
+    message.textContent = "Rekap berhasil ditampilkan.";
+
+  } catch (error) {
+    console.error(error);
+    message.textContent =
+      "Gagal memuat rekap: " + error.message;
+  }
+};
+
 // NAVIGASI ACCORDION PENILAIAN
 
 function closeAssessmentPanels() {
