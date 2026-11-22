@@ -57,8 +57,8 @@
     popup.document.open();
     popup.document.write('<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' +
       config.title + '</title><style>' + exportCss() +
-      '@media screen{body{padding:12px;overflow:auto}}</style></head><body>' + wrapper.outerHTML +
-      '<script>window.onload=function(){setTimeout(function(){window.focus();window.print();},500)};<\/script></body></html>');
+      '@media screen{body{padding:12px;overflow:auto}}</style></head><body>' + exportHtml +
+      '<script>window.onload=function(){setTimeout(function(){window.focus();window.print();},500)};</script></body></html>');
     popup.document.close();
   }
   function loadHtml2Canvas() {
