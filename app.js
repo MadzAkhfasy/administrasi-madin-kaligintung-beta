@@ -1175,9 +1175,11 @@ $("readingClassSelect").onchange = async () => {
       '#readingStudentList .reading-matrix{border-collapse:separate;border-spacing:0;font-size:12px;white-space:nowrap;min-width:max-content;width:100%}' +
       '#readingStudentList .reading-matrix{overflow:visible!important;border-radius:0!important}' +
       '#readingStudentList .reading-matrix th{padding:9px 8px;background:#104b32;color:#fff;font-weight:700;text-align:center}' +
-      '#readingStudentList .reading-matrix .reading-name-head{position:-webkit-sticky!important;position:sticky!important;top:0!important;left:0!important;z-index:10!important;min-width:155px;background:#104b32!important;text-align:left;box-shadow:2px 0 4px rgba(0,0,0,.12)}' +
-      '#readingStudentList .reading-matrix .reading-page-head{position:sticky;top:0;z-index:2;min-width:46px}' +
-      '#readingStudentList .reading-matrix .reading-student-name{position:-webkit-sticky!important;position:sticky!important;left:0!important;z-index:5!important;min-width:155px;padding:9px 8px;background:#f1f7f3!important;color:#174b35!important;text-align:left;font-size:12px;font-weight:600;border-bottom:1px solid #e5ebe6;box-shadow:2px 0 4px rgba(0,0,0,.08)}' +
+      '#readingStudentList .reading-matrix .reading-no-head{position:sticky!important;top:0!important;left:0!important;z-index:12!important;width:42px;min-width:42px;max-width:42px;background:#104b32!important;color:white;text-align:center}' +
+      '#readingStudentList .reading-matrix .reading-name-head{position:sticky!important;top:0!important;left:42px!important;z-index:11!important;min-width:155px;background:#104b32!important;text-align:left;box-shadow:2px 0 4px rgba(0,0,0,.12)}' +
+      '#readingStudentList .reading-matrix .reading-student-no{position:sticky!important;left:0!important;z-index:6!important;width:42px;min-width:42px;max-width:42px;padding:9px 4px;background:#f1f7f3!important;color:#174b35!important;text-align:center;font-weight:600;border-bottom:1px solid #e5ebe6}' +
+      '#readingStudentList .reading-matrix .reading-student-name{position:sticky!important;left:42px!important;z-index:5!important;min-width:155px;padding:9px 8px;background:#f1f7f3!important;color:#174b35!important;text-align:left;font-size:12px;font-weight:600;border-bottom:1px solid #e5ebe6;box-shadow:2px 0 4px rgba(0,0,0,.08)}' +
+      '#readingStudentList .reading-matrix tbody tr:nth-child(even) .reading-student-no,#readingStudentList .reading-matrix tbody tr:nth-child(even) .reading-student-name{background:#e5f0e8!important}' +
       '#readingStudentList .reading-matrix tbody tr:nth-child(even) .reading-student-name{background:#e5f0e8!important}' +
       '#readingStudentList .reading-matrix td{padding:4px;text-align:center;border-bottom:1px solid #e5ebe6;border-left:1px solid #edf1ed;background:#fff}' +
       '#readingStudentList .reading-matrix .reading-score{width:42px;height:36px;padding:2px;border:1px solid #cbd8ce;border-radius:9px;font-size:17px;font-weight:700;color:#174b35;cursor:pointer}' +
@@ -1189,8 +1191,8 @@ $("readingClassSelect").onchange = async () => {
       '@media(max-width:600px){#readingStudentList .reading-matrix .reading-student-name,#readingStudentList .reading-matrix .reading-name-head{min-width:145px}}' +
       '</style><div class="reading-matrix-wrap"><table class="reading-matrix"><thead><tr>';
 
+    table += '<th class="reading-no-head">No.</th>';
     table += '<th class="reading-name-head">Nama Santri</th>';
-
     for (let page = 1; page <= pageCount; page++) {
       table += '<th class="reading-page-head">' + page + '</th>';
     }
@@ -1199,8 +1201,10 @@ $("readingClassSelect").onchange = async () => {
 
     santri.forEach((s, index) => {
       table += '<tr>';
+      table += '<th class="reading-student-no">' +
+     (index + 1) + '</th>';
       table += '<th class="reading-student-name">' +
-        (index + 1) + '. ' + esc(s.name || "-") + '</th>';
+  esc(s.name || "-") + '</th>';
 
       for (let page = 1; page <= pageCount; page++) {
         const value = latest[s.id + "_" + page];
