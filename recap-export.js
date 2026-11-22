@@ -171,9 +171,9 @@
     const sheet = buildSheet(config, "png");
     sheet.id = "madin-png-sheet";
     sheet.style.cssText =
-      "position:fixed;left:0;top:0;z-index:2147483000;display:block;" +
-      "width:max-content;max-width:none;max-height:85vh;overflow:auto;" +
-      "background:#fff;box-shadow:0 0 0 100vmax rgba(0,0,0,.35);";
+      "position:absolute;left:0;top:0;z-index:2147483000;display:block;" +
+      "width:max-content;max-width:none;height:auto;max-height:none;overflow:visible;" +
+      "background:#fff;";
     document.body.appendChild(sheet);
 
     try {
@@ -193,7 +193,7 @@
         allowTaint: false,
         logging: false,
         width: sheet.scrollWidth,
-        height: sheet.scrollHeight,
+        height: Math.ceil(sheet.getBoundingClientRect().height),
         windowWidth: Math.max(document.documentElement.clientWidth, sheet.scrollWidth),
         windowHeight: Math.max(document.documentElement.clientHeight, sheet.scrollHeight),
         scrollX: 0,
