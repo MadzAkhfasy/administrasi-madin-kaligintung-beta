@@ -1505,6 +1505,7 @@ async function loadWritingAssessmentTable() {
       '@media(max-width:600px){#writingStudentList .writing-matrix .writing-student-name,#writingStudentList .writing-matrix .writing-name-head{min-width:145px}}' +
       '</style><div class="writing-matrix-wrap"><table class="writing-matrix"><thead><tr>';
 
+    table += '<th class="writing-no-head">No.</th>';
     table += '<th class="writing-name-head">Nama Santri</th>';
 
     for (let page = 1; page <= pageCount; page++) {
@@ -1515,8 +1516,10 @@ async function loadWritingAssessmentTable() {
 
     santri.forEach((s, index) => {
       table += '<tr>';
-      table += '<th class="writing-student-name">' +
-        (index + 1) + '. ' + esc(s.name || "-") + '</th>';
+      table += '<th class="writing-student-no">' +
+      (index + 1) + '</th>';
+       table += '<th class="writing-student-name">' +
+        esc(s.name || "-") + '</th>';
 
       for (let page = 1; page <= pageCount; page++) {
         const record = latest[s.id + "_" + page];
