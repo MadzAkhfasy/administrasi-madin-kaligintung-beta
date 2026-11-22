@@ -572,20 +572,24 @@ $("showReadingRecapBtn").onclick = async () => {
               <tr>
                 <th style="
                   position:sticky;
+                  top:0;
                   left:0;
                   background:#104b32;
                   color:white;
                   padding:10px;
-                  z-index:2;
+                  z-index:3;
                 ">Nama Santri</th>
     `;
 
     for (let page = 1; page <= farthestPage; page++) {
       table += `
         <th style="
-          background:#104b32;
-          color:white;
-          padding:10px;
+         position:sticky;
+         top:0;
+         background:#104b32;
+         color:white;
+         padding:10px;
+         z-index:2;
         ">${page}</th>
       `;
     }
