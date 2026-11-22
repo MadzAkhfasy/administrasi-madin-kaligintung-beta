@@ -43,19 +43,16 @@
     });
 
     if (format === "pdf") {
-      // Gunakan text-decoration, bukan elemen garis absolut. Browser Android
-      // sering tidak mencetak elemen span absolut yang berada di dalam sel grid.
+      // Sisakan jarak nyata antara huruf dan garis bawah agar tidak menempel.
       clone.querySelectorAll('span[style*="padding-bottom"]').forEach(el => {
         const underline = el.querySelector("span");
         if (underline) underline.remove();
         el.style.position = "static";
-        el.style.display = "inline";
-        el.style.paddingBottom = "0";
-        el.style.textDecorationLine = "underline";
-        el.style.textDecorationColor = "#c62828";
-        el.style.textDecorationThickness = "2px";
-        el.style.textUnderlineOffset = "3px";
-        el.style.textDecorationSkipInk = "none";
+        el.style.display = "inline-block";
+        el.style.paddingBottom = "6px";
+        el.style.borderBottom = "2px solid #c62828";
+        el.style.lineHeight = "1.2";
+        el.style.textDecoration = "none";
       });
     }
 
