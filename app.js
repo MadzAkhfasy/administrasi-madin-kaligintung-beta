@@ -448,6 +448,211 @@ async function loadClasses(){
 
  classes.sort((a,b)=>(a.order||0)-(b.order||0));
 }
+
+// ======================================
+// REKAP BULANAN PENILAIAN MEMBACA YANBU'A
+// ======================================
+
+function setupReadingRecap() {
+  const classSelect = $("readingRecapClass");
+  const monthInput = $("readingRecapMonth");
+
+  classSelect.innerHTML = '<option value="">Pilih kelas</option>';
+
+  classes
+    .filter(k => k.name.startsWith("Kelas Jilid"))
+    .forEach(k => {
+      const option = document.createElement("option");
+      option.value = k.id;
+      option.textContent = k.name;
+      classSelect.appendChild(option);
+    });
+
+  monthInput.value = new Date()
+    .toLocaleDateString("sv-SE")
+    .slice(0, 7);
+}
+
+$("showReadingRecapBtn").onclick = async () => {
+  const classId = $("readingRecapClass").value;
+  const month = $("readingRecapMonth").value;
+  const resultBox = $("readingRecapResult");
+  const message = $("readingRecapMessage");
+
+  resultBox.innerHTML = "";
+  message.textContent = "";
+
+  if (!classId || !month) {
+    message.textContent = "Silakan pilih kelas dan bulan.";
+    return;
+  }
+
+  message.textContent = "Memuat rekap penilaian...";
+
+  try {
+    const selectedClass = classes.find(k => k.id === classId);
+
+    const santri = students
+      .filter(s => s.classId === classId)
+      .sort((a, b) =>
+        (a.name || "").localeCompare(b.name || "")
+      );
+
+    const snap = await getDocs(query(
+      collection(db, "readingAssessments"),
+      where("classId", "==", classId)
+    ));
+
+    const assessments = snap.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .filter(a => {
+        if (!a.assessedAt) return false;
+
+        const date = new Date(a.assessedAt);
+        const assessedMonth =
+          date.getFullYear() + "-" +
+          String(date.getMonth() + 1).padStart(2, "0");
+
+        return assessedMonth === month;
+      });
+
+    if (!santri.length) {
+      message.textContent = "Belum ada santri di kelas ini.";
+      return;
+    }
+
+    if (!assessments.length) {
+      message.textContent =
+        "Belum ada hasil penilaian membaca pada bulan ini.";
+      return;
+    }
+
+    const latest = {};
+
+    assessments.forEach(a => {
+      latest[a.studentId + "_" + a.page] = a;
+    });
+
+    const farthestPage = Math.max(
+      ...assessments.map(a => Number(a.page) || 0)
+    );
+
+    const colors = {
+      green: "#d9f2df",
+      yellow: "#fff1b8",
+      orange: "#ffdfbd",
+      red: "#ffd6d6"
+    };
+
+    let table = `
+      <div style="margin-top:18px">
+        <h3>${esc(selectedClass.name)}</h3>
+        <p class="muted">
+          Rekap bulan ${esc(month)}
+        </p>
+
+        <div style="overflow-x:auto;border:1px solid #d9e2dc;border-radius:12px">
+          <table style="
+            border-collapse:collapse;
+            width:100%;
+            min-width:max-content;
+            font-size:12px;
+            white-space:nowrap;
+          ">
+            <thead>
+              <tr>
+                <th style="
+                  position:sticky;
+                  left:0;
+                  background:#104b32;
+                  color:white;
+                  padding:10px;
+                  z-index:2;
+                ">Nama Santri</th>
+    `;
+
+    for (let page = 1; page <= farthestPage; page++) {
+      table += `
+        <th style="
+          background:#104b32;
+          color:white;
+          padding:10px;
+        ">${page}</th>
+      `;
+    }
+
+    table += "</tr></thead><tbody>";
+
+    santri.forEach((s, index) => {
+      table += `
+        <tr>
+          <th style="
+            position:sticky;
+            left:0;
+            background:#f1f7f3;
+            color:#174b35;
+            text-align:left;
+            padding:9px;
+            border-bottom:1px solid #e5ebe6;
+            z-index:1;
+          ">
+            ${index + 1}. ${esc(s.name || "-")}
+          </th>
+      `;
+
+      for (let page = 1; page <= farthestPage; page++) {
+        const value = latest[s.id + "_" + page];
+
+        let symbol = "";
+        let background = "#fff";
+
+        if (value) {
+          symbol = value.result === "red"
+            ? "ص̲"
+            : "ص";
+
+          background = colors[value.result] || "#fff";
+        }
+
+        table += `
+          <td style="
+            text-align:center;
+            padding:7px;
+            min-width:32px;
+            font-size:17px;
+            font-weight:bold;
+            background:${background};
+            border:1px solid #edf1ed;
+          ">${symbol}</td>
+        `;
+      }
+
+      table += "</tr>";
+    });
+
+    table += `
+        </tbody>
+        </table>
+        </div>
+
+        <p class="muted" style="font-size:11px;margin-top:10px">
+          Halaman ditampilkan sampai halaman terjauh yang dicapai
+          pada bulan terpilih. Sel kosong berarti belum ada hasil
+          penilaian pada bulan tersebut.
+        </p>
+      </div>
+    `;
+
+    resultBox.innerHTML = table;
+    message.textContent = "Rekap berhasil ditampilkan.";
+
+  } catch (error) {
+    console.error(error);
+    message.textContent =
+      "Gagal memuat rekap: " + error.message;
+  }
+};
+
 // NAVIGASI ACCORDION PENILAIAN
 
 function closeAssessmentPanels() {
