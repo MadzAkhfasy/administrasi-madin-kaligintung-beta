@@ -25,6 +25,10 @@
       ? classSelect.selectedOptions[0].textContent.trim() : "";
     const month = monthLabel(monthInput ? monthInput.value : "");
     const clone = source.cloneNode(true);
+    // Hilangkan judul periode yang muncul tepat di atas tabel; bulan/tahun tetap ada di kop laporan.
+    clone.querySelectorAll("p").forEach(el => {
+      if (/^rekap\\s+bulan\\b/i.test((el.textContent || "").replace(/\\s+/g, " ").trim())) el.remove();
+    });
     // Hilangkan baris "Rekap bulan YYYY-MM" dari salinan ekspor PDF maupun PNG.
     // Teks dinormalisasi agar tetap terdeteksi meskipun ada spasi atau baris baru dari template.
     clone.querySelectorAll("p, h3, h4, small, div, span").forEach(el => {
