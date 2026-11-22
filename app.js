@@ -1164,7 +1164,7 @@ async function loadWritingAssessmentTable() {
         const score = record?.score ?? "";
 
         table += '<td><input type="number" class="writing-score"' +
-          ' min="75" max="90" step="1"' +
+          ' min="70" max="90" step="1"' +
           ' value="' + score + '"' +
           ' data-student="' + s.id + '"' +
           ' data-page="' + page + '"' +
@@ -1175,7 +1175,7 @@ async function loadWritingAssessmentTable() {
     });
 
     table += '</tbody></table></div>';
-    table += '<p class="muted" style="font-size:11px;margin-top:8px">Masukkan nilai 75–90 pada halaman yang dinilai. Nilai akan disimpan setelah kolom selesai diubah.</p>';
+    table += '<p class="muted" style="font-size:11px;margin-top:8px">Masukkan nilai 70–90 pada halaman yang dinilai. Nilai akan disimpan setelah kolom selesai diubah.</p>';
 
     list.innerHTML = table;
 
@@ -1199,8 +1199,8 @@ async function loadWritingAssessmentTable() {
 
         const score = Number(rawValue);
 
-        if (!Number.isInteger(score) || score < 75 || score > 90) {
-          alert("Nilai harus berupa angka bulat antara 75 sampai 90.");
+        if (!Number.isInteger(score) || score < 70 || score > 90) {
+        alert("Nilai harus berupa angka bulat antara 70 sampai 90.");
           input.value = "";
           input.focus();
           return;
