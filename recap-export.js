@@ -50,13 +50,13 @@
     const sheet = document.createElement("div");
     sheet.className = "madin-export-sheet madin-export-" + format;
     sheet.innerHTML =
-      '<div class="madin-export-header">' +
+      '<div class="madin-export-header"><div class="madin-export-brand">' +
         '<img src="' + logoUrl + '" alt="Logo Madin">' +
         '<div class="madin-export-heading">' +
           '<div class="madin-export-madin">MADRASAH DINIYAH KALIGINTUNG</div>' +
           '<div class="madin-export-title">' + config.title + '</div>' +
           '<div class="madin-export-meta">' + className + ' | ' + month + '</div>' +
-        '</div>' +
+        '</div></div>' +
       '</div><div class="madin-export-content"></div>' +
       '<div class="madin-export-footer">Madrasah Diniyah Kaligintung</div>';
     sheet.querySelector(".madin-export-content").appendChild(clone);
@@ -70,10 +70,11 @@
     style.textContent =
       ".madin-export-sheet{box-sizing:border-box;display:block;width:max-content;min-width:100%;padding:22px;background:#fff;color:#17251d;font-family:Arial,sans-serif}" +
       ".madin-export-header{display:flex;align-items:center;gap:16px;border-bottom:3px solid #c9a64f;padding:0 0 14px;margin:0 0 16px;background:#fff}" +
-      ".madin-export-header img{width:76px;height:76px;object-fit:contain}" +
-      ".madin-export-pdf .madin-export-header{flex-direction:row;align-items:center;justify-content:center;gap:16px;text-align:center}" +
-      ".madin-export-pdf .madin-export-header img{display:block;flex:0 0 76px;margin:0}" +
-      ".madin-export-pdf .madin-export-heading{text-align:center;flex:1;min-width:0}" +
+      ".madin-export-brand{display:flex;align-items:center;gap:16px;width:max-content;max-width:100%;margin:0 auto}" +
+      ".madin-export-header img{display:block;flex:0 0 76px;width:76px;height:76px;object-fit:contain;margin:0}" +
+      ".madin-export-pdf .madin-export-header{justify-content:center;text-align:center}" +
+      ".madin-export-pdf .madin-export-brand{justify-content:center}" +
+      ".madin-export-pdf .madin-export-heading{text-align:center;flex:0 1 auto;min-width:0}" +
       ".madin-export-madin{font-size:20px;font-weight:800;color:#104b32;letter-spacing:.4px}" +
       ".madin-export-title{font-size:15px;font-weight:700;margin-top:5px;color:#17251d}" +
       ".madin-export-meta{font-size:13px;margin-top:5px;color:#17251d}" +
