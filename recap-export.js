@@ -43,23 +43,19 @@
     });
 
     if (format === "pdf") {
-      clone.querySelectorAll('span[style*="padding-bottom:4px"]').forEach(el => {
-        el.style.position = "relative";
-        el.style.display = "inline-block";
-        el.style.paddingBottom = "4px";
-        el.style.overflow = "visible";
-      });
-      clone.querySelectorAll('span[style*="border-bottom:2px solid #c62828"]').forEach(el => {
-        el.style.position = "absolute";
-        el.style.display = "block";
-        el.style.left = "50%";
-        el.style.bottom = "0";
-        el.style.top = "auto";
-        el.style.transform = "translateX(-50%)";
-        el.style.width = "16px";
-        el.style.borderBottom = "2px solid #c62828";
-        el.style.opacity = "1";
-        el.style.visibility = "visible";
+      // Gunakan text-decoration, bukan elemen garis absolut. Browser Android
+      // sering tidak mencetak elemen span absolut yang berada di dalam sel grid.
+      clone.querySelectorAll('span[style*="padding-bottom"]').forEach(el => {
+        const underline = el.querySelector("span");
+        if (underline) underline.remove();
+        el.style.position = "static";
+        el.style.display = "inline";
+        el.style.paddingBottom = "0";
+        el.style.textDecorationLine = "underline";
+        el.style.textDecorationColor = "#c62828";
+        el.style.textDecorationThickness = "2px";
+        el.style.textUnderlineOffset = "3px";
+        el.style.textDecorationSkipInk = "none";
       });
     }
 
