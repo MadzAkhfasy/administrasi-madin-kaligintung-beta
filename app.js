@@ -915,19 +915,34 @@ $("showWritingRecapBtn").onclick = async () => {
         ">
 
           <td style="
-            padding:6px 8px;
-            text-align:center;
-          ">
-            ${index + 1}
-          </td>
+  position:sticky;
+  left:0;
+  z-index:2;
+  width:42px;
+  min-width:42px;
+  padding:6px 8px;
+  text-align:center;
+  background:${rowBackground};
+  border-bottom:1px solid #e5ebe6;
+">
+  ${index + 1}
+</td>
 
-          <td style="
-            padding:6px 8px;
-            white-space:normal;
-            min-width:145px;
-          ">
-            ${esc(s.name || "-")}
-          </td>
+<td style="
+  position:sticky;
+  left:42px;
+  z-index:2;
+  width:145px;
+  min-width:145px;
+  max-width:145px;
+  padding:6px 8px;
+  white-space:normal;
+  background:${rowBackground};
+  border-right:1px solid #d9e2dc;
+  border-bottom:1px solid #e5ebe6;
+">
+  ${esc(s.name || "-")}
+</td>
       `;
 
       for (let page = 1; page <= maxPage; page++) {
