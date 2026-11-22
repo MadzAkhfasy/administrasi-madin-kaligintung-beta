@@ -1,4 +1,4 @@
-const CACHE = "administrasi-madin-beta-v1";
+const CACHE = "administrasi-madin-beta-v2";
 
 self.addEventListener("install", event => {
   self.skipWaiting();
