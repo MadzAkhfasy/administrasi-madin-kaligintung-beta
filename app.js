@@ -616,10 +616,6 @@ if (value) {
 
   background = colors[value.result] || "#fff";
 }
-
-          background = colors[value.result] || "#fff";
-        }
-
         table += `
           <td style="
             text-align:center;
