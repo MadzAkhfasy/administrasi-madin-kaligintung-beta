@@ -82,7 +82,7 @@
 
   function printPdf(config) {
     addExportStyles();
-    const sheet = buildSheet(config, "png");
+    const sheet = buildSheet(config, "pdf");
     sheet.id = "madin-print-sheet";
     sheet.style.display = "none";
     document.body.appendChild(sheet);
@@ -123,7 +123,7 @@
   async function savePng(config) {
     const html2canvas = await loadHtml2Canvas();
     addExportStyles();
-    const sheet = buildSheet(config);
+    const sheet = buildSheet(config, "png");
     sheet.id = "madin-png-sheet";
     sheet.style.cssText =
       "position:fixed;left:0;top:0;z-index:2147483000;display:block;" +
