@@ -583,7 +583,7 @@ $("showReadingRecapBtn").onclick = async () => {
 
     for (let page = 1; page <= farthestPage; page++) {
       table += `
-        <<th style="
+        <th style="
   position:sticky;
   top:0;
   min-width:42px;
