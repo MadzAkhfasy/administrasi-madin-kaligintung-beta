@@ -39,8 +39,8 @@
       '.madin-export-header{display:flex;align-items:center;gap:16px;border-bottom:3px solid #c9a64f;padding:0 0 14px;margin-bottom:16px}' +
       '.madin-export-header img{width:76px;height:76px;object-fit:contain}.madin-export-madin{font-size:20px;font-weight:800;color:#104b32;letter-spacing:.4px}' +
       '.madin-export-title{font-size:15px;font-weight:700;margin-top:5px}.madin-export-meta{font-size:13px;margin-top:5px}' +
-      '.madin-export-body{width:max-content;min-width:100%}.madin-export-body>div{max-height:none!important;overflow:visible!important;border-radius:0!important}' +
-      '.madin-export-body [style*="position:sticky"]{position:static!important}.madin-export-body [style*="overflow:auto"]{overflow:visible!important;max-height:none!important}' +
+      '.madin-export-body{display:block;width:max-content;min-width:100%;min-height:40px}.madin-export-body>div{display:block;max-height:none!important;height:auto!important;overflow:visible!important;visibility:visible!important;opacity:1!important;border-radius:0!important}' +
+      '.madin-export-body [style*="position:sticky"]{position:static!important}.madin-export-body [style*="overflow:auto"]{overflow:visible!important;max-height:none!important}.madin-export-body [style*="display:grid"]{display:grid!important;visibility:visible!important;opacity:1!important}' +
       '.madin-export-sheet footer{font-size:10px;color:#65736a;border-top:1px solid #dce5df;margin-top:14px;padding-top:8px}' +
       '@media print{@page{size:landscape;margin:8mm}body{margin:0}.madin-export-sheet{padding:0}.madin-export-header{break-after:avoid}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}}';
   }
@@ -51,6 +51,8 @@
     wrapper.style.position = "absolute"; wrapper.style.left = "-100000px"; wrapper.style.top = "0";
     document.body.appendChild(wrapper);
     const contentWidth = Math.max(wrapper.scrollWidth, 1);
+    wrapper.style.width = contentWidth + "px";
+    wrapper.style.display = "block";
     wrapper.style.zoom = Math.min(1, 1050 / contentWidth);
     const exportHtml = wrapper.outerHTML;
     wrapper.remove();
@@ -76,13 +78,14 @@
   async function savePng(config) {
     const html2canvas = await loadHtml2Canvas();
     const wrapper = makeExportDocument(config);
-    wrapper.style.position = "fixed"; wrapper.style.left = "0"; wrapper.style.top = "0"; wrapper.style.opacity = "0.01"; wrapper.style.zIndex = "-1"; wrapper.style.pointerEvents = "none";
+    wrapper.style.position = "fixed"; wrapper.style.left = "0"; wrapper.style.top = "0"; wrapper.style.opacity = "1"; wrapper.style.zIndex = "2147483000"; wrapper.style.pointerEvents = "none"; wrapper.style.background = "#ffffff";
     document.body.appendChild(wrapper);
     try {
       const logo = wrapper.querySelector("img");
       if (logo && !logo.complete) await new Promise(resolve => {logo.onload=resolve;logo.onerror=resolve;});
       if (document.fonts && document.fonts.ready) await document.fonts.ready;
-      const canvas = await html2canvas(wrapper,{scale:2,backgroundColor:"#ffffff",useCORS:true,logging:false,windowWidth:Math.max(wrapper.scrollWidth,document.documentElement.clientWidth)});
+      const canvas = await html2canvas(wrapper,{scale:2,backgroundColor:"#ffffff",useCORS:true,logging:false,removeContainer:true,windowWidth:Math.max(wrapper.scrollWidth,document.documentElement.clientWidth),windowHeight:Math.max(wrapper.scrollHeight,document.documentElement.clientHeight),scrollX:0,scrollY:0});
+      if (!canvas.width || !canvas.height) throw new Error("Isi rekap tidak berhasil dirender menjadi gambar.");
       const link = document.createElement("a");
       link.download = "Rekap-" + config.type + "-Madin-" + Date.now() + ".png";
       link.href = canvas.toDataURL("image/png");
