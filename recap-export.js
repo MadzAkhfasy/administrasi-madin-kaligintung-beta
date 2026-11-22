@@ -72,7 +72,7 @@
         '<div class="madin-export-heading">' +
           '<div class="madin-export-madin">MADRASAH DINIYAH KALIGINTUNG</div>' +
           '<div class="madin-export-title">' + config.title + '</div>' +
-          '<div class="madin-export-meta">' + className + '</div>' +
+          '<div class="madin-export-meta">' + className + (month ? ' • ' + month : '') + '</div>' +
         '</div></div>' +
       '</div><div class="madin-export-content"></div>' +
       '<div class="madin-export-footer">Madrasah Diniyah Kaligintung</div>';
