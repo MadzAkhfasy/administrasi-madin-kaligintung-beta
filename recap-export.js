@@ -33,6 +33,10 @@
         el.remove();
       }
     });
+    // Nama kelas sudah dicantumkan pada kop; hilangkan judul kelas duplikat di atas tabel.
+    clone.querySelectorAll("h3").forEach(el => {
+      if ((el.textContent || "").replace(/\s+/g, " ").trim() === className) el.remove();
+    });
     clone.removeAttribute("id");
     clone.querySelectorAll("[id]").forEach(el => el.removeAttribute("id"));
 
@@ -76,7 +80,23 @@
         '</div></div>' +
       '</div><div class="madin-export-content"></div>' +
       '<div class="madin-export-footer">Madrasah Diniyah Kaligintung</div>';
-    sheet.querySelector(".madin-export-content").appendChild(clone);
+    const exportContent = sheet.querySelector(".madin-export-content");
+    exportContent.appendChild(clone);
+
+    // Legenda warna khusus rekap Membaca Yanbu'a untuk menjelaskan jumlah pengulangan خ.
+    if (config.type === "reading") {
+      const legend = document.createElement("div");
+      legend.style.cssText = "margin-top:16px;padding:10px 12px;border:1px solid #d9e2dc;border-radius:8px;background:#f8fbf9;color:#17251d;font-size:12px;line-height:1.6";
+      legend.innerHTML =
+        '<div style="font-weight:700;margin-bottom:5px">Keterangan warna hasil membaca (pengulangan خ):</div>' +
+        '<div style="display:flex;flex-wrap:wrap;gap:8px 16px">' +
+          '<span><b style="background:#d9f2df;padding:2px 7px;border-radius:4px">ص Hijau</b> Lancar tanpa pengulangan خ.</span>' +
+          '<span><b style="background:#fff1b8;padding:2px 7px;border-radius:4px">ص Kuning</b> Lancar setelah 1 kali خ.</span>' +
+          '<span><b style="background:#ffdfbd;padding:2px 7px;border-radius:4px">ص Oranye</b> Lancar setelah 2 kali خ.</span>' +
+          '<span><b style="background:#ffd6d6;padding:2px 7px;border-radius:4px">ص̲ Merah</b> Belum lancar pada hari ketiga.</span>' +
+        '</div>';
+      exportContent.appendChild(legend);
+    }
     return sheet;
   }
 
