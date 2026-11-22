@@ -605,10 +605,14 @@ $("showReadingRecapBtn").onclick = async () => {
         const value = latest[s.id + "_" + page];
 
         let symbol = "";
+        let symbolStyle = "";
         let background = "#fff";
 
         if (value) {
           symbol = "ص";
+          if (value.result === "red") {
+  symbolStyle = "text-decoration:underline;text-decoration-color:#c62828;text-decoration-thickness:2px;text-underline-offset:6px;";
+          }
 
           background = colors[value.result] || "#fff";
         }
@@ -622,7 +626,7 @@ $("showReadingRecapBtn").onclick = async () => {
             font-weight:bold;
             background:${background};
             border:1px solid #edf1ed;
-          ">${symbol}</td>
+          "><span style="${symbolStyle}">${symbol}</span></td>
         `;
       }
 
