@@ -1495,6 +1495,7 @@ async function loadWritingAssessmentTable() {
       '#writingStudentList .writing-matrix{border-collapse:separate;border-spacing:0;font-size:12px;white-space:nowrap;min-width:max-content;width:100%}' +
       '#writingStudentList .writing-matrix{overflow:visible!important;border-radius:0!important}' +
       '#writingStudentList .writing-matrix .writing-no-head{position:sticky!important;top:0!important;left:0!important;z-index:12!important;width:42px;min-width:42px;max-width:42px;background:#104b32!important;color:white;text-align:center}' +
+      '#writingStudentList .writing-matrix th{padding:9px 8px;background:#104b32;color:#fff;font-weight:700;text-align:center}' +
       '#writingStudentList .writing-matrix .writing-name-head{position:sticky!important;top:0!important;left:42px!important;z-index:11!important;min-width:155px;background:#104b32!important;text-align:left;box-shadow:2px 0 4px rgba(0,0,0,.12)}' +
       '#writingStudentList .writing-matrix .writing-student-no{position:sticky!important;left:0!important;z-index:6!important;width:42px;min-width:42px;max-width:42px;padding:9px 4px;background:#f1f7f3!important;color:#174b35!important;text-align:center;font-weight:600;border-bottom:1px solid #e5ebe6}' +
       '#writingStudentList .writing-matrix .writing-student-name{position:sticky!important;left:42px!important;z-index:5!important;min-width:155px;padding:9px 8px;background:#f1f7f3!important;color:#174b35!important;text-align:left;font-size:12px;font-weight:600;border-bottom:1px solid #e5ebe6;box-shadow:2px 0 4px rgba(0,0,0,.08)}' +
