@@ -614,59 +614,126 @@ $("showReadingRecapBtn").onclick = async () => {
   min-width:170px;
   max-width:210px;
   background:#f1f7f3;
-  color:#174b35;
-  text-align:left;
-  white-space:normal;
-  line-height:1.4;
-  font-size:13px;
-  font-weight:600;
-  padding:11px 10px;
-  border-bottom:1px solid #e5ebe6;
-  border-right:1px solid #d9e2dc;
-  vertical-align:middle;
-  z-index:1;
-">
-            ${index + 1}. ${esc(s.name || "-")}
-          </th>
+
+let table = `
+      <div style="margin-top:18px">
+        <h3>${esc(selectedClass.name)}</h3>
+        <p class="muted">
+          Rekap bulan ${esc(month)}
+        </p>
+
+        <div style="
+          max-height:65vh;
+          overflow:auto;
+          border:1px solid #d9e2dc;
+          border-radius:12px;
+          background:#fff;
+          -webkit-overflow-scrolling:touch;
+          overscroll-behavior:contain;
+        ">
+          <div style="
+            display:grid;
+            grid-template-columns:minmax(170px,210px) repeat(${farthestPage},54px);
+            width:max-content;
+            min-width:100%;
+            font-size:13px;
+          ">
+
+            <div style="
+              position:sticky;
+              top:0;
+              left:0;
+              z-index:4;
+              background:#104b32;
+              color:white;
+              padding:10px;
+              font-weight:700;
+              border-right:1px solid #47745f;
+              border-bottom:2px solid #c9a64f;
+            ">Nama Santri</div>
+    `;
+
+    for (let page = 1; page <= farthestPage; page++) {
+      table += `
+        <div style="
+          position:sticky;
+          top:0;
+          z-index:3;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          min-width:54px;
+          padding:10px 6px;
+          background:#104b32;
+          color:white;
+          font-size:13px;
+          font-weight:600;
+          border-right:1px solid #47745f;
+          border-bottom:2px solid #c9a64f;
+        ">${page}</div>
+      `;
+    }
+
+    santri.forEach((s, index) => {
+      table += `
+        <div style="
+          position:sticky;
+          left:0;
+          z-index:2;
+          display:flex;
+          align-items:center;
+          min-width:0;
+          padding:11px 10px;
+          background:#f1f7f3;
+          color:#174b35;
+          text-align:left;
+          line-height:1.4;
+          font-size:13px;
+          font-weight:600;
+          border-right:1px solid #d9e2dc;
+          border-bottom:1px solid #e5ebe6;
+          overflow-wrap:anywhere;
+        ">
+          ${index + 1}. ${esc(s.name || "-")}
+        </div>
       `;
 
       for (let page = 1; page <= farthestPage; page++) {
         const value = latest[s.id + "_" + page];
 
         let symbolMarkup = "";
-let background = "#fff";
+        let background = "#fff";
 
-if (value) {
-  if (value.result === "red") {
-    symbolMarkup = '<span style="display:inline-block;position:relative;padding-bottom:4px">ص<span style="position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:16px;border-bottom:2px solid #c62828"></span></span>';
-  } else {
-    symbolMarkup = "ص";
-  }
+        if (value) {
+          if (value.result === "red") {
+            symbolMarkup = '<span style="display:inline-block;position:relative;padding-bottom:4px">ص<span style="position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:16px;border-bottom:2px solid #c62828"></span></span>';
+          } else {
+            symbolMarkup = "ص";
+          }
 
-  background = colors[value.result] || "#fff";
-}
+          background = colors[value.result] || "#fff";
+        }
+
         table += `
-          <td style="
-  text-align:center;
-  vertical-align:middle;
-  padding:8px 6px;
-  min-width:42px;
-  font-size:18px;
-  font-weight:bold;
-  color:#174b35;
-  background:${background};
-  border-right:1px solid #e5ebe6;
-  border-bottom:1px solid #e5ebe6;
-">${symbolMarkup}</td>
+          <div style="
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            min-width:54px;
+            padding:8px 6px;
+            font-size:18px;
+            font-weight:bold;
+            color:#174b35;
+            background:${background};
+            border-right:1px solid #e5ebe6;
+            border-bottom:1px solid #e5ebe6;
+          ">${symbolMarkup}</div>
         `;
       }
-
-      table += "</tr>";
     });
 
     table += `
-        </tbody>
-        </table>
+          </div>
         </div>
 
         <p class="muted" style="font-size:11px;margin-top:10px">
