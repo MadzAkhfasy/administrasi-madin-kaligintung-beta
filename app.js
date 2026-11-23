@@ -2854,21 +2854,15 @@ let evaluationDashboardCache = null;
 let evaluationDashboardClassOptionsReady = false;
 
 function setupEvaluationDashboardFilters() {
-  const monthInput = $("evaluationMonth");
-  const monthPicker = $("evaluationMonthPicker");
+  const monthSelect = $("evaluationMonth");
   const classSelect = $("evaluationClass");
-  if (!monthInput || !monthPicker || !classSelect) return;
+  if (!monthSelect || !classSelect) return;
 
-  if (!monthInput.value) {
-    monthInput.value = new Date().toLocaleDateString("sv-SE").slice(0, 7);
-  }
+  if (!monthSelect.value) monthSelect.value = new Date().toLocaleDateString("sv-SE").slice(0, 7);
 
-  if (!monthPicker.dataset.ready) {
+  if (!monthSelect.dataset.ready) {
     const currentYear = new Date().getFullYear();
-    const monthNames = [
-      "Januari","Februari","Maret","April","Mei","Juni",
-      "Juli","Agustus","September","Oktober","November","Desember"
-    ];
+    const monthNames = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
     const options = [];
     for (let year = currentYear - 5; year <= currentYear + 1; year++) {
       for (let month = 1; month <= 12; month++) {
@@ -2876,19 +2870,17 @@ function setupEvaluationDashboardFilters() {
         options.push({ value, label: monthNames[month - 1] + " " + year });
       }
     }
-    monthPicker.innerHTML = options.map(option =>
+    monthSelect.innerHTML = options.map(option =>
       '<option value="' + option.value + '">' + option.label + '</option>'
     ).join("");
-    monthPicker.dataset.ready = "1";
+    monthSelect.dataset.ready = "1";
   }
-  monthPicker.value = monthInput.value;
 
   if (!evaluationDashboardClassOptionsReady) {
     const visibleClasses = classes
       .filter(c => (c.name || "").startsWith("Kelas Jilid"))
       .filter(c => canAccessAllClasses() || c.id === myClass())
       .sort((a,b) => a.name.localeCompare(b.name, "id"));
-
     classSelect.innerHTML = "";
     if (canAccessAllClasses()) {
       const all = document.createElement("option");
@@ -2896,21 +2888,16 @@ function setupEvaluationDashboardFilters() {
       all.textContent = "Semua Kelas";
       classSelect.appendChild(all);
     }
-
     visibleClasses.forEach(cls => {
       const option = document.createElement("option");
       option.value = cls.id;
       option.textContent = cls.name;
       classSelect.appendChild(option);
     });
-
     evaluationDashboardClassOptionsReady = true;
   }
 
-  monthPicker.onchange = () => {
-    monthInput.value = monthPicker.value;
-    loadEvaluationDashboard();
-  };
+  monthSelect.onchange = () => loadEvaluationDashboard();
   classSelect.onchange = () => renderEvaluationDashboardFromCache();
   $("refreshEvaluationDashboard").onclick = () => {
     evaluationDashboardCache = null;
