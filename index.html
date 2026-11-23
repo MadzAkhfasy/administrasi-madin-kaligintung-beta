@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#176b45">
   <title>Administrasi Madin Kaligintung Beta</title>
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css?v=51">
+  <link rel="stylesheet" href="style.css?v=52">
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Almendra+SC&display=swap" rel="stylesheet">
@@ -667,19 +667,16 @@
     <div class="eval-filters card">
       <label>
         <span class="eval-filter-label-head">Periode</span>
-        <span class="eval-filter-control eval-period-control">
-          <select id="evaluationMonthPicker" aria-label="Pilih bulan dan tahun"></select>
-        </span>
-        <input type="hidden" id="evaluationMonth">
+        <select id="evaluationMonth" class="eval-filter-select" aria-label="Pilih bulan dan tahun"></select>
       </label>
       <label for="evaluationClass" class="eval-class-filter">
         <span class="eval-class-filter-head">
           <span>Kelas</span>
           <button type="button" id="refreshEvaluationDashboard" class="eval-refresh-btn" aria-label="Muat ulang data evaluasi" title="Muat ulang">↻</button>
         </span>
-        <span class="eval-filter-control"><select id="evaluationClass">
+        <select id="evaluationClass" class="eval-filter-select">
           <option value="__all__">Semua Kelas</option>
-        </select></span>
+        </select>
       </label>
     </div>
 
