@@ -5557,3 +5557,20 @@ font-size: 19px;
   #evaluasiDashboardPanel .eval-filters > label{font-size:11px}
   #evaluasiDashboardPanel .eval-filter-select{height:40px;padding-left:7px;padding-right:18px;font-size:10px}
 }
+
+
+/* Judul utama panel pada modul evaluasi */
+.eval-module-title {
+  display: block;
+  width: 100%;
+  margin: 0 0 16px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: linear-gradient(120deg, #0b3d2e, #176b45);
+  color: #d2ad50;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.35;
+  letter-spacing: .1px;
+  box-shadow: 0 4px 10px rgba(16, 75, 50, .12);
+}
