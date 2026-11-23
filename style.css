@@ -5519,325 +5519,41 @@ font-size: 19px;
 }
 
 
-/* Samakan lebar kolom, ukuran kotak, dan tipografi Periode/Kelas */
+
+/* FILTER MONITORING PEMBELAJARAN — satu kontrol baru per kolom */
 #evaluasiDashboardPanel .eval-filters{
-  display:grid !important;
-  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-  column-gap:12px !important;
-  align-items:start !important;
+  display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px;
+  align-items:end; margin:0; padding:14px; border:1px solid #dfeae2;
+  border-radius:14px; background:#f6faf7; box-shadow:none;
 }
 #evaluasiDashboardPanel .eval-filters > label{
-  display:flex !important;
-  flex-direction:column !important;
-  width:100% !important;
-  min-width:0 !important;
-  max-width:none !important;
-  box-sizing:border-box !important;
+  display:flex; flex-direction:column; gap:6px; min-width:0; margin:0;
+  color:#294638; font-size:12px; font-weight:700;
 }
 #evaluasiDashboardPanel .eval-filter-label-head,
 #evaluasiDashboardPanel .eval-class-filter-head{
-  width:100% !important;
-  min-width:0 !important;
-  height:24px !important;
-  min-height:24px !important;
-  max-height:24px !important;
-  box-sizing:border-box !important;
-  font-family:inherit !important;
-  font-size:12px !important;
-  font-weight:600 !important;
-  line-height:24px !important;
-  color:#294638 !important;
+  display:flex; align-items:center; justify-content:space-between;
+  min-height:22px; line-height:22px;
 }
-#evaluasiDashboardPanel .eval-filters input#evaluationMonth,
-#evaluasiDashboardPanel .eval-filters select#evaluationClass{
-  display:block !important;
-  width:100% !important;
-  min-width:0 !important;
-  max-width:100% !important;
-  height:42px !important;
-  min-height:42px !important;
-  max-height:42px !important;
-  box-sizing:border-box !important;
-  margin:0 !important;
-  padding:0 10px !important;
-  border:1px solid #d5e2d9 !important;
-  border-radius:9px !important;
-  background-color:#fff !important;
-  color:#243b30 !important;
-  font-family:inherit !important;
-  font-size:12px !important;
-  font-weight:500 !important;
-  line-height:40px !important;
-  text-align:left !important;
+#evaluasiDashboardPanel .eval-filter-select{
+  display:block; box-sizing:border-box; width:100%; min-width:0; height:42px;
+  margin:0; padding:0 25px 0 10px; border:1px solid #cbdccf;
+  border-radius:9px; background-color:#fff; color:#193f2d;
+  font-family:Arial,sans-serif; font-size:12px; font-weight:600;
+  line-height:normal; appearance:auto; -webkit-appearance:menulist;
+  pointer-events:auto; touch-action:manipulation;
 }
-#evaluasiDashboardPanel .eval-filters select#evaluationClass{
-  padding-right:26px !important;
-}
-@media(max-width:380px){
-  #evaluasiDashboardPanel .eval-filters{column-gap:8px !important}
-  #evaluasiDashboardPanel .eval-filters input#evaluationMonth,
-  #evaluasiDashboardPanel .eval-filters select#evaluationClass{
-    height:40px !important;
-    min-height:40px !important;
-    max-height:40px !important;
-    padding-left:7px !important;
-    padding-right:7px !important;
-    font-size:11px !important;
-  }
-}
-
-
-/* Samakan tampilan fisik kontrol Periode dan Kelas pada semua browser */
-#evaluasiDashboardPanel .eval-filters{
-  display:grid !important;
-  grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
-  gap:12px !important;
-  align-items:start !important;
-}
-#evaluasiDashboardPanel .eval-filters > label{
-  display:flex !important;
-  flex-direction:column !important;
-  width:100% !important;
-  min-width:0 !important;
-  margin:0 !important;
-  gap:5px !important;
-}
-#evaluasiDashboardPanel .eval-filter-label-head,
-#evaluasiDashboardPanel .eval-class-filter-head{
-  display:flex !important;
-  align-items:center !important;
-  width:100% !important;
-  height:24px !important;
-  min-height:24px !important;
-  max-height:24px !important;
-  margin:0 !important;
-  padding:0 !important;
-  box-sizing:border-box !important;
-  color:#294638 !important;
-  font-family:Arial,sans-serif !important;
-  font-size:12px !important;
-  font-weight:600 !important;
-  line-height:24px !important;
-}
-#evaluasiDashboardPanel .eval-filter-control{
-  display:flex !important;
-  align-items:center !important;
-  width:100% !important;
-  min-width:0 !important;
-  height:42px !important;
-  min-height:42px !important;
-  max-height:42px !important;
-  padding:0 10px !important;
-  box-sizing:border-box !important;
-  overflow:hidden !important;
-  border:1px solid #d5e2d9 !important;
-  border-radius:9px !important;
-  background:#fff !important;
-}
-#evaluasiDashboardPanel .eval-filter-control input#evaluationMonth,
-#evaluasiDashboardPanel .eval-filter-control select#evaluationClass{
-  display:block !important;
-  appearance:none !important;
-  -webkit-appearance:none !important;
-  width:100% !important;
-  min-width:0 !important;
-  max-width:100% !important;
-  height:40px !important;
-  min-height:40px !important;
-  max-height:40px !important;
-  margin:0 !important;
-  padding:0 !important;
-  border:0 !important;
-  outline:0 !important;
-  border-radius:0 !important;
-  background:transparent !important;
-  box-shadow:none !important;
-  color:#243b30 !important;
-  font-family:Arial,sans-serif !important;
-  font-size:12px !important;
-  font-weight:500 !important;
-  line-height:normal !important;
-  text-align:left !important;
-  box-sizing:border-box !important;
-}
-#evaluasiDashboardPanel .eval-filter-control input#evaluationMonth::-webkit-datetime-edit{
-  padding:0 !important;
-  color:#243b30 !important;
-  font-family:Arial,sans-serif !important;
-  font-size:12px !important;
-  font-weight:500 !important;
-}
-#evaluasiDashboardPanel .eval-filter-control input#evaluationMonth::-webkit-calendar-picker-indicator{
-  margin:0 0 0 5px !important;
-}
-#evaluasiDashboardPanel .eval-filter-control select#evaluationClass{
-  padding-right:0 !important;
-}
-#evaluasiDashboardPanel .eval-class-filter-head{
-  justify-content:space-between !important;
+#evaluasiDashboardPanel .eval-filter-select:focus{
+  outline:2px solid rgba(23,107,69,.2); outline-offset:1px; border-color:#176b45;
 }
 #evaluasiDashboardPanel button#refreshEvaluationDashboard{
-  width:24px !important;
-  min-width:24px !important;
-  max-width:24px !important;
-  height:24px !important;
-  min-height:24px !important;
-  max-height:24px !important;
-  flex:0 0 24px !important;
+  display:inline-flex; align-items:center; justify-content:center;
+  width:24px; min-width:24px; height:24px; padding:0;
+  border:1px solid #d5e2d9; border-radius:7px; background:#fff;
+  color:#176b45; font-size:17px; line-height:1;
 }
 @media(max-width:380px){
-  #evaluasiDashboardPanel .eval-filters{gap:8px !important}
-  #evaluasiDashboardPanel .eval-filter-control{
-    height:40px !important;
-    min-height:40px !important;
-    max-height:40px !important;
-    padding:0 7px !important;
-  }
-  #evaluasiDashboardPanel .eval-filter-control input#evaluationMonth,
-  #evaluasiDashboardPanel .eval-filter-control select#evaluationClass{
-    height:38px !important;
-    min-height:38px !important;
-    max-height:38px !important;
-    font-size:11px !important;
-  }
-  #evaluasiDashboardPanel .eval-filter-control input#evaluationMonth::-webkit-datetime-edit{
-    font-size:11px !important;
-  }
-}
-
-
-/* Filter Monitoring: kedua kontrol memakai elemen SELECT yang seragam */
-#evaluasiDashboardPanel .eval-filters .eval-filter-control{
-  display:flex !important;
-  align-items:center !important;
-  width:100% !important;
-  height:42px !important;
-  min-height:42px !important;
-  max-height:42px !important;
-  box-sizing:border-box !important;
-  padding:0 10px !important;
-  border:1px solid #d5e2d9 !important;
-  border-radius:9px !important;
-  background:#fff !important;
-  overflow:hidden !important;
-}
-#evaluasiDashboardPanel .eval-filters select#evaluationMonthPicker,
-#evaluasiDashboardPanel .eval-filters select#evaluationClass{
-  display:block !important;
-  appearance:auto !important;
-  -webkit-appearance:menulist !important;
-  width:100% !important;
-  min-width:0 !important;
-  max-width:100% !important;
-  height:40px !important;
-  min-height:40px !important;
-  max-height:40px !important;
-  margin:0 !important;
-  padding:0 !important;
-  border:0 !important;
-  border-radius:0 !important;
-  outline:0 !important;
-  box-shadow:none !important;
-  background:transparent !important;
-  color:#243b30 !important;
-  font-family:Arial,sans-serif !important;
-  font-size:12px !important;
-  font-weight:500 !important;
-  line-height:normal !important;
-  text-align:left !important;
-  box-sizing:border-box !important;
-}
-#evaluasiDashboardPanel .eval-filters .eval-period-control,
-#evaluasiDashboardPanel .eval-filters label[for="evaluationClass"] .eval-filter-control{
-  width:100% !important;
-  min-width:0 !important;
-}
-@media(max-width:380px){
-  #evaluasiDashboardPanel .eval-filters .eval-filter-control{
-    height:40px !important;
-    min-height:40px !important;
-    max-height:40px !important;
-    padding:0 7px !important;
-  }
-  #evaluasiDashboardPanel .eval-filters select#evaluationMonthPicker,
-  #evaluasiDashboardPanel .eval-filters select#evaluationClass{
-    height:38px !important;
-    min-height:38px !important;
-    max-height:38px !important;
-    font-size:11px !important;
-  }
-}
-
-
-/* Perbaikan interaksi dan teks satu baris filter Monitoring */
-#evaluasiDashboardPanel .eval-filters .eval-filter-control{
-  position:relative !important;
-  overflow:visible !important;
-  pointer-events:auto !important;
-}
-#evaluasiDashboardPanel .eval-filters select#evaluationMonthPicker,
-#evaluasiDashboardPanel .eval-filters select#evaluationClass{
-  position:relative !important;
-  z-index:2 !important;
-  display:block !important;
-  width:100% !important;
-  min-width:0 !important;
-  max-width:100% !important;
-  padding:0 2px !important;
-  font-family:Arial,sans-serif !important;
-  font-size:10px !important;
-  font-weight:500 !important;
-  line-height:1.2 !important;
-  white-space:nowrap !important;
-  text-overflow:ellipsis !important;
-  overflow:hidden !important;
-  pointer-events:auto !important;
-  touch-action:manipulation !important;
-  cursor:pointer !important;
-  appearance:auto !important;
-  -webkit-appearance:menulist !important;
-}
-#evaluasiDashboardPanel .eval-filters select#evaluationMonthPicker:focus,
-#evaluasiDashboardPanel .eval-filters select#evaluationClass:focus{
-  outline:2px solid rgba(23,107,69,.18) !important;
-  outline-offset:-2px !important;
-}
-@media(max-width:380px){
-  #evaluasiDashboardPanel .eval-filters select#evaluationMonthPicker,
-  #evaluasiDashboardPanel .eval-filters select#evaluationClass{
-    font-size:9px !important;
-  }
-}
-
-
-/* Nilai periode hanya untuk penyimpanan internal; jangan tampilkan atau menutupi dropdown */
-#evaluasiDashboardPanel input[type="hidden"]#evaluationMonth{
-  display:none !important;
-  position:absolute !important;
-  width:0 !important;
-  height:0 !important;
-  min-width:0 !important;
-  min-height:0 !important;
-  padding:0 !important;
-  margin:0 !important;
-  border:0 !important;
-  opacity:0 !important;
-  pointer-events:none !important;
-}
-#evaluasiDashboardPanel .eval-period-control select#evaluationMonthPicker{
-  display:block !important;
-  position:relative !important;
-  z-index:1 !important;
-  width:100% !important;
-  min-width:0 !important;
-  max-width:100% !important;
-  font-size:10px !important;
-  white-space:nowrap !important;
-  pointer-events:auto !important;
-  touch-action:manipulation !important;
-}
-@media(max-width:380px){
-  #evaluasiDashboardPanel .eval-period-control select#evaluationMonthPicker{
-    font-size:10px !important;
-  }
+  #evaluasiDashboardPanel .eval-filters{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:10px}
+  #evaluasiDashboardPanel .eval-filters > label{font-size:11px}
+  #evaluasiDashboardPanel .eval-filter-select{height:40px;padding-left:7px;padding-right:18px;font-size:10px}
 }
