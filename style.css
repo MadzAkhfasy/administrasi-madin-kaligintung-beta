@@ -5166,3 +5166,50 @@ font-size: 19px;
     padding:10px 12px !important;
   }
 }
+
+
+/* Penyempurnaan judul Dashboard Evaluasi */
+#evaluasiDashboardPanel .eval-dashboard-heading{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:12px !important;
+}
+#evaluasiDashboardPanel .eval-dashboard-heading > div{
+  flex:1 1 auto;
+  min-width:0;
+}
+#evaluasiDashboardPanel .eval-dashboard-heading h2{
+  font-size:17px !important;
+  font-weight:600 !important;
+  line-height:1.25 !important;
+  letter-spacing:0 !important;
+}
+#evaluasiDashboardPanel .eval-dashboard-heading .eval-eyebrow{
+  font-size:9px;
+  letter-spacing:1.2px;
+}
+#evaluasiDashboardPanel .eval-refresh-btn{
+  width:34px !important;
+  height:34px !important;
+  flex:0 0 34px !important;
+  padding:0 !important;
+  margin-left:auto !important;
+  border-radius:9px !important;
+  font-size:20px !important;
+}
+@media(max-width:600px){
+  #evaluasiDashboardPanel .eval-dashboard-heading{
+    padding:12px 14px !important;
+    gap:8px !important;
+  }
+  #evaluasiDashboardPanel .eval-dashboard-heading h2{
+    font-size:16px !important;
+    font-weight:600 !important;
+  }
+  #evaluasiDashboardPanel .eval-refresh-btn{
+    width:32px !important;
+    height:32px !important;
+    flex-basis:32px !important;
+  }
+}
