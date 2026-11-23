@@ -5944,7 +5944,9 @@ $("backupDataBtn").onclick = async () => {
       "students",
       "attendance",
       "calendarSettings",
-      "holidays"
+      "holidays",
+      "readingAssessments",
+      "writingAssessments"
     ];
 
     for (const name of collectionNames) {
@@ -6042,7 +6044,9 @@ $("restoreDataBtn").onclick = async () => {
       "students",
       "attendance",
       "calendarSettings",
-      "holidays"
+      "holidays",
+      "readingAssessments",
+      "writingAssessments"
     ];
 
     for (const name of requiredCollections) {
@@ -6145,7 +6149,9 @@ $("checkBackupBtn").onclick = async () => {
       "students",
       "attendance",
       "calendarSettings",
-      "holidays"
+      "holidays",
+      "readingAssessments",
+      "writingAssessments"
     ];
 
     for (const name of requiredCollections) {
