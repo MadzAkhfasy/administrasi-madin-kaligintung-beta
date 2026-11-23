@@ -5767,3 +5767,44 @@ font-size: 19px;
     font-size:11px !important;
   }
 }
+
+
+/* Perbaikan interaksi dan teks satu baris filter Monitoring */
+#evaluasiDashboardPanel .eval-filters .eval-filter-control{
+  position:relative !important;
+  overflow:visible !important;
+  pointer-events:auto !important;
+}
+#evaluasiDashboardPanel .eval-filters select#evaluationMonthPicker,
+#evaluasiDashboardPanel .eval-filters select#evaluationClass{
+  position:relative !important;
+  z-index:2 !important;
+  display:block !important;
+  width:100% !important;
+  min-width:0 !important;
+  max-width:100% !important;
+  padding:0 2px !important;
+  font-family:Arial,sans-serif !important;
+  font-size:10px !important;
+  font-weight:500 !important;
+  line-height:1.2 !important;
+  white-space:nowrap !important;
+  text-overflow:ellipsis !important;
+  overflow:hidden !important;
+  pointer-events:auto !important;
+  touch-action:manipulation !important;
+  cursor:pointer !important;
+  appearance:auto !important;
+  -webkit-appearance:menulist !important;
+}
+#evaluasiDashboardPanel .eval-filters select#evaluationMonthPicker:focus,
+#evaluasiDashboardPanel .eval-filters select#evaluationClass:focus{
+  outline:2px solid rgba(23,107,69,.18) !important;
+  outline-offset:-2px !important;
+}
+@media(max-width:380px){
+  #evaluasiDashboardPanel .eval-filters select#evaluationMonthPicker,
+  #evaluasiDashboardPanel .eval-filters select#evaluationClass{
+    font-size:9px !important;
+  }
+}
