@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#176b45">
   <title>Administrasi Madin Kaligintung Beta</title>
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css?v=42">
+  <link rel="stylesheet" href="style.css?v=43">
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Almendra+SC&display=swap" rel="stylesheet">
@@ -661,19 +661,18 @@
 <section id="evaluasiDashboardPanel" class="panel hidden">
   <div class="eval-dashboard">
     <div class="eval-dashboard-heading">
-      <div>
-        <span class="eval-eyebrow">MONITORING PEMBELAJARAN</span>
-        <h2>Dashboard Evaluasi</h2>
-        <p class="muted">Ringkasan perkembangan penilaian santri.</p>
-      </div>
-      <button type="button" id="refreshEvaluationDashboard" class="eval-refresh-btn" aria-label="Perbarui data evaluasi">↻</button>
+      <h2>Monitoring Pembelajaran</h2>
     </div>
 
     <div class="eval-filters card">
       <label for="evaluationMonth">Periode
         <input type="month" id="evaluationMonth">
       </label>
-      <label for="evaluationClass">Kelas
+      <label for="evaluationClass" class="eval-class-filter">
+        <span class="eval-class-filter-head">
+          <span>Kelas</span>
+          <button type="button" id="refreshEvaluationDashboard" class="eval-refresh-btn" aria-label="Muat ulang data evaluasi" title="Muat ulang">↻</button>
+        </span>
         <select id="evaluationClass">
           <option value="__all__">Semua Kelas</option>
         </select>
