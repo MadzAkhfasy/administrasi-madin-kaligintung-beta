@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#176b45">
   <title>Administrasi Madin Kaligintung Beta</title>
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css?v=48">
+  <link rel="stylesheet" href="style.css?v=49">
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Almendra+SC&display=swap" rel="stylesheet">
@@ -665,9 +665,12 @@
     </div>
 
     <div class="eval-filters card">
-      <label for="evaluationMonth">
+      <label>
         <span class="eval-filter-label-head">Periode</span>
-        <span class="eval-filter-control"><input type="month" id="evaluationMonth"></span>
+        <span class="eval-filter-control eval-period-control">
+          <select id="evaluationMonthPicker" aria-label="Pilih bulan dan tahun"></select>
+          <input type="hidden" id="evaluationMonth">
+        </span>
       </label>
       <label for="evaluationClass" class="eval-class-filter">
         <span class="eval-class-filter-head">
@@ -966,7 +969,7 @@
   });
 })();
 </script>
-  <script type="module" src="app.js?v=46"></script>
+  <script type="module" src="app.js?v=47"></script>
 <script>
 (function () {
 

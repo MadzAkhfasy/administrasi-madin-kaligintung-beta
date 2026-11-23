@@ -2855,12 +2855,33 @@ let evaluationDashboardClassOptionsReady = false;
 
 function setupEvaluationDashboardFilters() {
   const monthInput = $("evaluationMonth");
+  const monthPicker = $("evaluationMonthPicker");
   const classSelect = $("evaluationClass");
-  if (!monthInput || !classSelect) return;
+  if (!monthInput || !monthPicker || !classSelect) return;
 
   if (!monthInput.value) {
     monthInput.value = new Date().toLocaleDateString("sv-SE").slice(0, 7);
   }
+
+  if (!monthPicker.dataset.ready) {
+    const currentYear = new Date().getFullYear();
+    const monthNames = [
+      "Januari","Februari","Maret","April","Mei","Juni",
+      "Juli","Agustus","September","Oktober","November","Desember"
+    ];
+    const options = [];
+    for (let year = currentYear - 5; year <= currentYear + 1; year++) {
+      for (let month = 1; month <= 12; month++) {
+        const value = year + "-" + String(month).padStart(2, "0");
+        options.push({ value, label: monthNames[month - 1] + " " + year });
+      }
+    }
+    monthPicker.innerHTML = options.map(option =>
+      '<option value="' + option.value + '">' + option.label + '</option>'
+    ).join("");
+    monthPicker.dataset.ready = "1";
+  }
+  monthPicker.value = monthInput.value;
 
   if (!evaluationDashboardClassOptionsReady) {
     const visibleClasses = classes
@@ -2886,7 +2907,10 @@ function setupEvaluationDashboardFilters() {
     evaluationDashboardClassOptionsReady = true;
   }
 
-  monthInput.onchange = () => loadEvaluationDashboard();
+  monthPicker.onchange = () => {
+    monthInput.value = monthPicker.value;
+    loadEvaluationDashboard();
+  };
   classSelect.onchange = () => renderEvaluationDashboardFromCache();
   $("refreshEvaluationDashboard").onclick = () => {
     evaluationDashboardCache = null;
