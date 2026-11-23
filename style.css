@@ -5084,3 +5084,85 @@ font-size: 19px;
   #evaluasiDashboardPanel .eval-attention-row{grid-template-columns:1fr}
   #evaluasiDashboardPanel .eval-attention-tags{justify-content:flex-start}
 }
+
+
+/* HEADER HIJAU-GOLD SERAGAM UNTUK SELURUH PANEL MODUL */
+#appView .panel .card > h2,
+#appView .panel .card > .section-head,
+#dashboardPanel .dash-section-title,
+#evaluasiDashboardPanel .eval-dashboard-heading {
+  display:block;
+  box-sizing:border-box;
+  background:linear-gradient(120deg,#176b45,#0b3d2e) !important;
+  color:#c9a64f !important;
+  border:0 !important;
+  border-radius:14px 14px 0 0 !important;
+  padding:16px 20px !important;
+  margin:-20px -20px 18px !important;
+}
+#appView .panel .card > h2,
+#appView .panel .card > .section-head h2,
+#dashboardPanel .dash-section-title h2,
+#evaluasiDashboardPanel .eval-dashboard-heading h2 {
+  color:#c9a64f !important;
+  margin:0 !important;
+  padding:0 !important;
+  font-size:20px !important;
+  font-weight:800 !important;
+  line-height:1.35;
+  letter-spacing:0;
+}
+#appView .panel .card > h2::after,
+#appView .panel .card > .section-head h2::after,
+#dashboardPanel .dash-section-title h2::after,
+#evaluasiDashboardPanel .eval-dashboard-heading h2::after {
+  content:none !important;
+  display:none !important;
+}
+#appView .panel .card > .section-head p,
+#dashboardPanel .dash-section-title p,
+#evaluasiDashboardPanel .eval-dashboard-heading p {
+  color:rgba(255,255,255,.86) !important;
+  margin:5px 0 0 !important;
+  font-size:12px;
+}
+/* Subpanel pada Dashboard Evaluasi mengikuti header modul utama */
+#evaluasiDashboardPanel .eval-card-heading {
+  display:block;
+  box-sizing:border-box;
+  margin:-16px -16px 14px !important;
+  padding:10px 13px !important;
+  border:0 !important;
+  border-radius:12px 12px 0 0 !important;
+  background:linear-gradient(120deg,#176b45,#0b3d2e) !important;
+}
+#evaluasiDashboardPanel .eval-card-heading > div {
+  align-items:center;
+}
+#evaluasiDashboardPanel .eval-card-heading h3 {
+  color:#c9a64f !important;
+  font-size:13px !important;
+  font-weight:800 !important;
+}
+#evaluasiDashboardPanel .eval-card-heading small {
+  color:rgba(255,255,255,.82) !important;
+}
+#evaluasiDashboardPanel .eval-section-index {
+  border-color:rgba(201,166,79,.7) !important;
+  background:rgba(255,255,255,.12) !important;
+  color:#e5c875 !important;
+}
+@media(max-width:600px) {
+  #appView .panel .card > h2,
+  #appView .panel .card > .section-head,
+  #dashboardPanel .dash-section-title,
+  #evaluasiDashboardPanel .eval-dashboard-heading {
+    padding:14px 16px !important;
+    margin:-16px -16px 15px !important;
+    font-size:19px !important;
+  }
+  #evaluasiDashboardPanel .eval-card-heading {
+    margin:-14px -14px 13px !important;
+    padding:10px 12px !important;
+  }
+}
