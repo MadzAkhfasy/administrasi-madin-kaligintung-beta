@@ -5517,3 +5517,71 @@ font-size: 19px;
     font-size:10px !important;
   }
 }
+
+
+/* Samakan lebar kolom, ukuran kotak, dan tipografi Periode/Kelas */
+#evaluasiDashboardPanel .eval-filters{
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  column-gap:12px !important;
+  align-items:start !important;
+}
+#evaluasiDashboardPanel .eval-filters > label{
+  display:flex !important;
+  flex-direction:column !important;
+  width:100% !important;
+  min-width:0 !important;
+  max-width:none !important;
+  box-sizing:border-box !important;
+}
+#evaluasiDashboardPanel .eval-filter-label-head,
+#evaluasiDashboardPanel .eval-class-filter-head{
+  width:100% !important;
+  min-width:0 !important;
+  height:24px !important;
+  min-height:24px !important;
+  max-height:24px !important;
+  box-sizing:border-box !important;
+  font-family:inherit !important;
+  font-size:12px !important;
+  font-weight:600 !important;
+  line-height:24px !important;
+  color:#294638 !important;
+}
+#evaluasiDashboardPanel .eval-filters input#evaluationMonth,
+#evaluasiDashboardPanel .eval-filters select#evaluationClass{
+  display:block !important;
+  width:100% !important;
+  min-width:0 !important;
+  max-width:100% !important;
+  height:42px !important;
+  min-height:42px !important;
+  max-height:42px !important;
+  box-sizing:border-box !important;
+  margin:0 !important;
+  padding:0 10px !important;
+  border:1px solid #d5e2d9 !important;
+  border-radius:9px !important;
+  background-color:#fff !important;
+  color:#243b30 !important;
+  font-family:inherit !important;
+  font-size:12px !important;
+  font-weight:500 !important;
+  line-height:40px !important;
+  text-align:left !important;
+}
+#evaluasiDashboardPanel .eval-filters select#evaluationClass{
+  padding-right:26px !important;
+}
+@media(max-width:380px){
+  #evaluasiDashboardPanel .eval-filters{column-gap:8px !important}
+  #evaluasiDashboardPanel .eval-filters input#evaluationMonth,
+  #evaluasiDashboardPanel .eval-filters select#evaluationClass{
+    height:40px !important;
+    min-height:40px !important;
+    max-height:40px !important;
+    padding-left:7px !important;
+    padding-right:7px !important;
+    font-size:11px !important;
+  }
+}
