@@ -5574,3 +5574,30 @@ font-size: 19px;
   letter-spacing: .1px;
   box-shadow: 0 4px 10px rgba(16, 75, 50, .12);
 }
+
+/* FIX TEGAS: header tiga panel utama modul evaluasi */
+#evaluasiPenilaianPanel .card > h2.eval-module-title,
+#evaluasiBulananPanel .card > h2.eval-module-title,
+#evaluasiRaporPanel .card > h2.eval-module-title {
+  display:block !important;
+  box-sizing:border-box !important;
+  width:calc(100% + 40px) !important;
+  margin:-20px -20px 18px !important;
+  padding:16px 20px !important;
+  background:linear-gradient(120deg,#176b45,#0b3d2e) !important;
+  color:#c9a64f !important;
+  border:0 !important;
+  border-radius:14px 14px 0 0 !important;
+  box-shadow:none !important;
+  font-size:20px !important;
+  font-weight:800 !important;
+  line-height:1.35 !important;
+  letter-spacing:0 !important;
+  text-align:left !important;
+}
+#evaluasiPenilaianPanel .card > h2.eval-module-title::after,
+#evaluasiBulananPanel .card > h2.eval-module-title::after,
+#evaluasiRaporPanel .card > h2.eval-module-title::after {
+  content:none !important;
+  display:none !important;
+}
