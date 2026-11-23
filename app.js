@@ -2862,7 +2862,7 @@ function setupEvaluationDashboardFilters() {
 
   if (!monthSelect.dataset.ready) {
     const currentYear = new Date().getFullYear();
-    const monthNames = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+    const monthNames = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
     const options = [];
     for (let year = currentYear - 5; year <= currentYear + 1; year++) {
       for (let month = 1; month <= 12; month++) {
