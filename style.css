@@ -5289,3 +5289,88 @@ font-size: 19px;
     font-size:15px !important;
   }
 }
+
+
+/* Penyesuaian akhir Monitoring Pembelajaran */
+#evaluasiDashboardPanel .eval-dashboard-heading{
+  display:block !important;
+  width:calc(100% + 44px) !important;
+  max-width:none !important;
+  margin:-22px -22px 0 !important;
+  padding:11px 18px !important;
+  box-sizing:border-box !important;
+  border:0 !important;
+  border-radius:13px 13px 0 0 !important;
+  background:linear-gradient(120deg,#176b45,#0b3d2e) !important;
+  box-shadow:none !important;
+}
+#evaluasiDashboardPanel .eval-dashboard-heading h2{
+  display:block !important;
+  width:100% !important;
+  margin:0 !important;
+  padding:0 !important;
+  background:transparent !important;
+  color:#c9a64f !important;
+  font-size:15px !important;
+  font-weight:650 !important;
+  line-height:1.35 !important;
+}
+#evaluasiDashboardPanel .eval-filters{
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  align-items:end !important;
+}
+#evaluasiDashboardPanel .eval-filters label{
+  min-width:0;
+}
+#evaluasiDashboardPanel .eval-class-filter-head{
+  min-height:27px !important;
+  align-items:center !important;
+}
+#evaluasiDashboardPanel .eval-refresh-btn{
+  width:26px !important;
+  height:26px !important;
+  min-width:26px !important;
+  flex:0 0 26px !important;
+  border-radius:4px !important;
+  padding:0 !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  font-size:16px !important;
+}
+@media(max-width:700px){
+  #evaluasiDashboardPanel .eval-dashboard-heading{
+    width:calc(100% + 32px) !important;
+    margin:-16px -16px 0 !important;
+    padding:10px 15px !important;
+  }
+  #evaluasiDashboardPanel .eval-filters{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:8px !important;
+  }
+}
+@media(max-width:380px){
+  #evaluasiDashboardPanel .eval-dashboard{padding:12px !important}
+  #evaluasiDashboardPanel .eval-dashboard-heading{
+    width:calc(100% + 24px) !important;
+    margin:-12px -12px 0 !important;
+    padding:9px 12px !important;
+  }
+  #evaluasiDashboardPanel .eval-filters{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:7px !important;
+    padding:10px !important;
+  }
+  #evaluasiDashboardPanel .eval-filters input,
+  #evaluasiDashboardPanel .eval-filters select{
+    min-height:39px !important;
+    padding:8px 7px !important;
+    font-size:11px !important;
+  }
+  #evaluasiDashboardPanel .eval-refresh-btn{
+    width:24px !important;
+    height:24px !important;
+    min-width:24px !important;
+    flex-basis:24px !important;
+  }
+}
