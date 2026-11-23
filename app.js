@@ -2861,14 +2861,17 @@ function setupEvaluationDashboardFilters() {
   if (!monthSelect.value) monthSelect.value = new Date().toLocaleDateString("sv-SE").slice(0, 7);
 
   if (!monthSelect.dataset.ready) {
-    const currentYear = new Date().getFullYear();
+    const startYear = 2026;
+    const startMonth = 11;
+    const totalMonths = 60;
     const monthNames = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
     const options = [];
-    for (let year = currentYear - 5; year <= currentYear + 1; year++) {
-      for (let month = 1; month <= 12; month++) {
-        const value = year + "-" + String(month).padStart(2, "0");
-        options.push({ value, label: monthNames[month - 1] + " " + year });
-      }
+    for (let offset = 0; offset < totalMonths; offset++) {
+      const date = new Date(startYear, startMonth - 1 + offset, 1);
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      const value = year + "-" + String(month).padStart(2, "0");
+      options.push({ value, label: monthNames[month - 1] + " " + year });
     }
     monthSelect.innerHTML = options.map(option =>
       '<option value="' + option.value + '">' + option.label + '</option>'
