@@ -5704,3 +5704,66 @@ font-size: 19px;
     font-size:11px !important;
   }
 }
+
+
+/* Filter Monitoring: kedua kontrol memakai elemen SELECT yang seragam */
+#evaluasiDashboardPanel .eval-filters .eval-filter-control{
+  display:flex !important;
+  align-items:center !important;
+  width:100% !important;
+  height:42px !important;
+  min-height:42px !important;
+  max-height:42px !important;
+  box-sizing:border-box !important;
+  padding:0 10px !important;
+  border:1px solid #d5e2d9 !important;
+  border-radius:9px !important;
+  background:#fff !important;
+  overflow:hidden !important;
+}
+#evaluasiDashboardPanel .eval-filters select#evaluationMonthPicker,
+#evaluasiDashboardPanel .eval-filters select#evaluationClass{
+  display:block !important;
+  appearance:auto !important;
+  -webkit-appearance:menulist !important;
+  width:100% !important;
+  min-width:0 !important;
+  max-width:100% !important;
+  height:40px !important;
+  min-height:40px !important;
+  max-height:40px !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  outline:0 !important;
+  box-shadow:none !important;
+  background:transparent !important;
+  color:#243b30 !important;
+  font-family:Arial,sans-serif !important;
+  font-size:12px !important;
+  font-weight:500 !important;
+  line-height:normal !important;
+  text-align:left !important;
+  box-sizing:border-box !important;
+}
+#evaluasiDashboardPanel .eval-filters .eval-period-control,
+#evaluasiDashboardPanel .eval-filters label[for="evaluationClass"] .eval-filter-control{
+  width:100% !important;
+  min-width:0 !important;
+}
+@media(max-width:380px){
+  #evaluasiDashboardPanel .eval-filters .eval-filter-control{
+    height:40px !important;
+    min-height:40px !important;
+    max-height:40px !important;
+    padding:0 7px !important;
+  }
+  #evaluasiDashboardPanel .eval-filters select#evaluationMonthPicker,
+  #evaluasiDashboardPanel .eval-filters select#evaluationClass{
+    height:38px !important;
+    min-height:38px !important;
+    max-height:38px !important;
+    font-size:11px !important;
+  }
+}
