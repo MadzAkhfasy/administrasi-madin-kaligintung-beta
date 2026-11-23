@@ -5374,3 +5374,71 @@ font-size: 19px;
     flex-basis:24px !important;
   }
 }
+
+
+/* Samakan tinggi label filter dan paksa tombol muat ulang persegi */
+#evaluasiDashboardPanel .eval-filters{
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+  align-items:start !important;
+}
+#evaluasiDashboardPanel .eval-filters > label{
+  display:grid !important;
+  grid-template-rows:22px 42px !important;
+  align-content:start !important;
+  align-items:stretch !important;
+  gap:4px !important;
+  min-width:0 !important;
+}
+#evaluasiDashboardPanel .eval-filter-label-head,
+#evaluasiDashboardPanel .eval-class-filter-head{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  width:100% !important;
+  height:22px !important;
+  min-height:22px !important;
+  line-height:22px !important;
+  box-sizing:border-box !important;
+}
+#evaluasiDashboardPanel .eval-filters input,
+#evaluasiDashboardPanel .eval-filters select{
+  width:100% !important;
+  height:42px !important;
+  min-height:42px !important;
+  box-sizing:border-box !important;
+  margin:0 !important;
+}
+#evaluasiDashboardPanel .eval-refresh-btn{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:22px !important;
+  height:22px !important;
+  min-width:22px !important;
+  max-width:22px !important;
+  min-height:22px !important;
+  max-height:22px !important;
+  flex:0 0 22px !important;
+  aspect-ratio:1 / 1 !important;
+  box-sizing:border-box !important;
+  padding:0 !important;
+  margin:0 0 0 auto !important;
+  border-radius:3px !important;
+  line-height:20px !important;
+}
+@media(max-width:380px){
+  #evaluasiDashboardPanel .eval-filters{
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+  }
+  #evaluasiDashboardPanel .eval-filters > label{
+    grid-template-rows:22px 40px !important;
+  }
+  #evaluasiDashboardPanel .eval-filters input,
+  #evaluasiDashboardPanel .eval-filters select{
+    height:40px !important;
+    min-height:40px !important;
+    padding:7px 5px !important;
+    font-size:10px !important;
+  }
+}
