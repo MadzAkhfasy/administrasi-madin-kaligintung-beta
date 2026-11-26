@@ -1595,6 +1595,7 @@ async function loadWritingAssessmentTable() {
 
         if (rawValue === "") {
           try {
+            await deleteDoc(doc(db, "writingAssessments", recordId));
             const recordsToDelete = classAssessments.filter(a =>
               a.studentId === studentId &&
               Number(a.page) === page &&
@@ -1659,6 +1660,7 @@ async function loadWritingAssessmentTable() {
 }
 
 $("writingClassSelect").onchange = loadWritingAssessmentTable;
+$("writingAssessmentMonth").onchange = loadWritingAssessmentTable;
 
 // MEMUAT JADWAL LIBUR MINGGUAN
 async function loadWeeklySchedule() {
