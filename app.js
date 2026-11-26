@@ -3118,14 +3118,14 @@ async function loadEvaluationDashboard(force = false) {
       }))
     ]);
 
-    const writingRows = [...writingSnap.docs, ...writingSnap.docs]
+    const writingRows = writingSnap.docs
       .map(d=>({id:d.id,...d.data()}));
     const uniqueWritingRows = {};
     writingRows.forEach(a=>{
       const key = a.classId + "_" + a.studentId + "_" + a.page;
       const old = uniqueWritingRows[key];
-      const rank = a.assessmentMonth ? "2" : (a.assessmentDate || "");
-      const oldRank = old ? (old.assessmentMonth ? "2" : (old.assessmentDate || "")) : "";
+      const rank = a.assessmentMonth ? "9999" : (a.assessmentDate || "");
+      const oldRank = old ? (old.assessmentMonth ? "9999" : (old.assessmentDate || "")) : "";
       if(!old || rank >= oldRank) uniqueWritingRows[key] = a;
     });
 
