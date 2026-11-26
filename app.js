@@ -3118,11 +3118,22 @@ async function loadEvaluationDashboard(force = false) {
       }))
     ]);
 
+    const writingRows = [...writingSnap.docs, ...writingSnap.docs]
+      .map(d=>({id:d.id,...d.data()}));
+    const uniqueWritingRows = {};
+    writingRows.forEach(a=>{
+      const key = a.classId + "_" + a.studentId + "_" + a.page;
+      const old = uniqueWritingRows[key];
+      const rank = a.assessmentMonth ? "2" : (a.assessmentDate || "");
+      const oldRank = old ? (old.assessmentMonth ? "2" : (old.assessmentDate || "")) : "";
+      if(!old || rank >= oldRank) uniqueWritingRows[key] = a;
+    });
+
     evaluationDashboardCache = {
       month:cacheKey,
       loadedAt:Date.now(),
       reading:readingSnap.docs.map(d=>({id:d.id,...d.data()})),
-      writing:writingSnap.docs.map(d=>({id:d.id,...d.data()}))
+      writing:Object.values(uniqueWritingRows)
     };
     renderEvaluationDashboardFromCache();
   } catch(error) {
