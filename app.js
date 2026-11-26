@@ -777,12 +777,20 @@ $("showWritingRecapBtn").onclick = async () => {
       where("classId", "==", classId)
     ));
 
-    const assessments = snap.docs
-      .map(d => d.data())
-      .filter(a =>
-        a.assessmentDate &&
-        a.assessmentDate.startsWith(month)
-    );
+    const monthRecords = snap.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .filter(a => a.assessmentMonth === month ||
+        (!a.assessmentMonth && (a.assessmentDate || "").startsWith(month)));
+
+    const uniqueMonthly = {};
+    monthRecords.forEach(a => {
+      const key = a.studentId + "_" + a.page;
+      const old = uniqueMonthly[key];
+      const rank = a.assessmentMonth ? month + "-99" : (a.assessmentDate || "");
+      const oldRank = old ? (old.assessmentMonth ? month + "-99" : (old.assessmentDate || "")) : "";
+      if (!old || rank >= oldRank) uniqueMonthly[key] = a;
+    });
+    const assessments = Object.values(uniqueMonthly);
 
     const recap = {};
     let maxPage = 0;
@@ -1443,18 +1451,11 @@ menu.appendChild(divider);
 // PENILAIAN MENULIS ARAB YANBU'A
 // ======================================
 
-function getLocalDateString() {
+function getLocalMonthString() {
   const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
 }
 
-// Tanggal tidak lagi langsung dianggap hari ini. Saat kelas dipilih,
- // tabel akan memakai tanggal penilaian terakhir yang memiliki data.
-let writingAssessmentDateManuallySelected = false;
-let writingAssessmentAutoDatePending = true;
 
 $("openWritingAssessmentBtn").onclick = () => {
   const select = $("writingClassSelect");
@@ -1472,9 +1473,8 @@ $("openWritingAssessmentBtn").onclick = () => {
       });
   }
 
-  if (!writingAssessmentDateManuallySelected) {
-    writingAssessmentAutoDatePending = true;
-    if (!select.value) $("writingAssessmentDate").value = "";
+  if (!$("writingAssessmentMonth").value) {
+    $("writingAssessmentMonth").value = getLocalMonthString();
   }
 
   toggleAssessmentPanel(
@@ -1485,12 +1485,12 @@ $("openWritingAssessmentBtn").onclick = () => {
 
 async function loadWritingAssessmentTable() {
   const classId = $("writingClassSelect").value;
-  let date = $("writingAssessmentDate").value;
+  const month = $("writingAssessmentMonth").value;
   const list = $("writingStudentList");
 
   list.innerHTML = "";
 
-  if (!classId || (!date && !writingAssessmentAutoDatePending)) return;
+  if (!classId || !month) return;
 
   const selectedClass = classes.find(k => k.id === classId);
   const pageCount = READING_PAGE_COUNTS[selectedClass?.name] || 0;
@@ -1510,24 +1510,18 @@ async function loadWritingAssessmentTable() {
     const classAssessments = assessmentSnap.docs
       .map(d => ({ id: d.id, ...d.data() }));
 
-    // Pada pemilihan kelas pertama, tampilkan tanggal terbaru yang benar-benar
-    // memiliki nilai. Tanggal tidak dipindahkan otomatis setelah dipilih manual.
-    if (writingAssessmentAutoDatePending && !writingAssessmentDateManuallySelected) {
-      const savedDates = classAssessments
-        .map(a => a.assessmentDate)
-        .filter(value => /^\d{4}-\d{2}-\d{2}$/.test(value || ""))
-        .sort();
-      date = savedDates.length ? savedDates[savedDates.length - 1] : getLocalDateString();
-      $("writingAssessmentDate").value = date;
-      writingAssessmentAutoDatePending = false;
-    }
-
-    const assessments = classAssessments.filter(a => a.assessmentDate === date);
+    const monthAssessments = classAssessments.filter(a =>
+      a.assessmentMonth === month ||
+      (!a.assessmentMonth && (a.assessmentDate || "").startsWith(month))
+    );
 
     const latest = {};
-
-    assessments.forEach(a => {
-      latest[a.studentId + "_" + a.page] = a;
+    monthAssessments.forEach(a => {
+      const key = a.studentId + "_" + a.page;
+      const old = latest[key];
+      const rank = a.assessmentMonth ? month + "-99" : (a.assessmentDate || "");
+      const oldRank = old ? (old.assessmentMonth ? month + "-99" : (old.assessmentDate || "")) : "";
+      if (!old || rank >= oldRank) latest[key] = a;
     });
 
     if (!santri.length) {
@@ -1597,11 +1591,21 @@ async function loadWritingAssessmentTable() {
         const rawValue = input.value.trim();
         const studentId = input.dataset.student;
         const page = Number(input.dataset.page);
-        const recordId = classId + "_" + studentId + "_" + page + "_" + date;
+        const recordId = classId + "_" + studentId + "_" + page + "_" + month;
 
         if (rawValue === "") {
           try {
             await deleteDoc(doc(db, "writingAssessments", recordId));
+            const recordsToDelete = classAssessments.filter(a =>
+              a.studentId === studentId &&
+              Number(a.page) === page &&
+              (a.assessmentMonth === month ||
+                (!a.assessmentMonth && (a.assessmentDate || "").startsWith(month)))
+            );
+            for (const record of recordsToDelete) {
+              await deleteDoc(doc(db, "writingAssessments", record.id));
+            }
+            delete latest[studentId + "_" + page];
             input.style.background = "";
           } catch (error) {
             console.error(error);
@@ -1631,7 +1635,7 @@ async function loadWritingAssessmentTable() {
               className: selectedClass.name,
               page,
               score,
-              assessmentDate: date,
+              assessmentMonth: month,
               updatedAt: serverTimestamp()
             },
             { merge: true }
@@ -1656,11 +1660,7 @@ async function loadWritingAssessmentTable() {
 }
 
 $("writingClassSelect").onchange = loadWritingAssessmentTable;
-$("writingAssessmentDate").onchange = () => {
-  writingAssessmentDateManuallySelected = true;
-  writingAssessmentAutoDatePending = false;
-  loadWritingAssessmentTable();
-};
+$("writingAssessmentMonth").onchange = loadWritingAssessmentTable;
 
 // MEMUAT JADWAL LIBUR MINGGUAN
 async function loadWeeklySchedule() {
@@ -2931,6 +2931,12 @@ function setupEvaluationDashboardFilters() {
   };
 }
 
+function nextEvaluationMonth(month) {
+  const [year, monthNumber] = month.split("-").map(Number);
+  const next = new Date(year, monthNumber, 1);
+  return next.getFullYear() + "-" + String(next.getMonth() + 1).padStart(2, "0");
+}
+
 function evaluationMonthBounds(month) {
   const parts = month.split("-").map(Number);
   const start = new Date(parts[0], parts[1] - 1, 1);
@@ -3100,17 +3106,36 @@ async function loadEvaluationDashboard(force = false) {
         where("assessedAt",">=",bounds.startISO),
         where("assessedAt","<",bounds.endISO)
       )),
-      getDocs(query(collection(db,"writingAssessments"),
-        where("assessmentDate",">=",bounds.startDate),
-        where("assessmentDate","<",bounds.endDate)
-      ))
+      Promise.all([
+        getDocs(query(collection(db,"writingAssessments"),
+          where("assessmentMonth",">=",month),
+          where("assessmentMonth","<",nextEvaluationMonth(month))
+        )),
+        getDocs(query(collection(db,"writingAssessments"),
+          where("assessmentDate",">=",bounds.startDate),
+          where("assessmentDate","<",bounds.endDate)
+        ))
+      ]).then(([monthlySnap,legacySnap]) => ({
+        docs: [...monthlySnap.docs, ...legacySnap.docs.filter(d => !monthlySnap.docs.some(m => m.id === d.id))]
+      }))
     ]);
+
+    const writingRows = writingSnap.docs
+      .map(d=>({id:d.id,...d.data()}));
+    const uniqueWritingRows = {};
+    writingRows.forEach(a=>{
+      const key = a.classId + "_" + a.studentId + "_" + a.page;
+      const old = uniqueWritingRows[key];
+      const rank = a.assessmentMonth ? "9999" : (a.assessmentDate || "");
+      const oldRank = old ? (old.assessmentMonth ? "9999" : (old.assessmentDate || "")) : "";
+      if(!old || rank >= oldRank) uniqueWritingRows[key] = a;
+    });
 
     evaluationDashboardCache = {
       month:cacheKey,
       loadedAt:Date.now(),
       reading:readingSnap.docs.map(d=>({id:d.id,...d.data()})),
-      writing:writingSnap.docs.map(d=>({id:d.id,...d.data()}))
+      writing:Object.values(uniqueWritingRows)
     };
     renderEvaluationDashboardFromCache();
   } catch(error) {
