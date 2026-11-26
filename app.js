@@ -1451,6 +1451,11 @@ function getLocalDateString() {
   return `${year}-${month}-${day}`;
 }
 
+// Tanggal tidak lagi langsung dianggap hari ini. Saat kelas dipilih,
+ // tabel akan memakai tanggal penilaian terakhir yang memiliki data.
+let writingAssessmentDateManuallySelected = false;
+let writingAssessmentAutoDatePending = true;
+
 $("openWritingAssessmentBtn").onclick = () => {
   const select = $("writingClassSelect");
 
@@ -1467,8 +1472,9 @@ $("openWritingAssessmentBtn").onclick = () => {
       });
   }
 
-  if (!$("writingAssessmentDate").value) {
-    $("writingAssessmentDate").value = getLocalDateString();
+  if (!writingAssessmentDateManuallySelected) {
+    writingAssessmentAutoDatePending = true;
+    if (!select.value) $("writingAssessmentDate").value = "";
   }
 
   toggleAssessmentPanel(
@@ -1479,12 +1485,12 @@ $("openWritingAssessmentBtn").onclick = () => {
 
 async function loadWritingAssessmentTable() {
   const classId = $("writingClassSelect").value;
-  const date = $("writingAssessmentDate").value;
+  let date = $("writingAssessmentDate").value;
   const list = $("writingStudentList");
 
   list.innerHTML = "";
 
-  if (!classId || !date) return;
+  if (!classId || (!date && !writingAssessmentAutoDatePending)) return;
 
   const selectedClass = classes.find(k => k.id === classId);
   const pageCount = READING_PAGE_COUNTS[selectedClass?.name] || 0;
@@ -1501,9 +1507,22 @@ async function loadWritingAssessmentTable() {
       where("classId", "==", classId)
     ));
 
-    const assessments = assessmentSnap.docs
-      .map(d => ({ id: d.id, ...d.data() }))
-      .filter(a => a.assessmentDate === date);
+    const classAssessments = assessmentSnap.docs
+      .map(d => ({ id: d.id, ...d.data() }));
+
+    // Pada pemilihan kelas pertama, tampilkan tanggal terbaru yang benar-benar
+    // memiliki nilai. Tanggal tidak dipindahkan otomatis setelah dipilih manual.
+    if (writingAssessmentAutoDatePending && !writingAssessmentDateManuallySelected) {
+      const savedDates = classAssessments
+        .map(a => a.assessmentDate)
+        .filter(value => /^\d{4}-\d{2}-\d{2}$/.test(value || ""))
+        .sort();
+      date = savedDates.length ? savedDates[savedDates.length - 1] : getLocalDateString();
+      $("writingAssessmentDate").value = date;
+      writingAssessmentAutoDatePending = false;
+    }
+
+    const assessments = classAssessments.filter(a => a.assessmentDate === date);
 
     const latest = {};
 
@@ -1637,7 +1656,11 @@ async function loadWritingAssessmentTable() {
 }
 
 $("writingClassSelect").onchange = loadWritingAssessmentTable;
-$("writingAssessmentDate").onchange = loadWritingAssessmentTable;
+$("writingAssessmentDate").onchange = () => {
+  writingAssessmentDateManuallySelected = true;
+  writingAssessmentAutoDatePending = false;
+  loadWritingAssessmentTable();
+};
 
 // MEMUAT JADWAL LIBUR MINGGUAN
 async function loadWeeklySchedule() {
