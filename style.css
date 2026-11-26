@@ -5617,3 +5617,13 @@ font-size: 19px;
 #evaluasiPenilaianPanel .assessment-accordion-content {
   border-radius:0 0 13px 13px !important;
 }
+
+
+/* Jarak keterangan pada pilihan bulan penilaian menulis */
+#writingAssessmentView .writing-month-note {
+  margin: 8px 0 16px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
