@@ -1515,7 +1515,7 @@ async function loadWritingAssessmentTable() {
     if (writingAssessmentAutoDatePending && !writingAssessmentDateManuallySelected) {
       const savedDates = classAssessments
         .map(a => a.assessmentDate)
-        .filter(value => /^\\d{4}-\\d{2}-\\d{2}$/.test(value || ""))
+        .filter(value => /^\d{4}-\d{2}-\d{2}$/.test(value || ""))
         .sort();
       date = savedDates.length ? savedDates[savedDates.length - 1] : getLocalDateString();
       $("writingAssessmentDate").value = date;
