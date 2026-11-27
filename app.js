@@ -1191,8 +1191,11 @@ $("readingClassSelect").onchange = async () => {
       .filter(a => a.classId === classId);
 
     const latest = {};
+    const assessmentByCell = {};
     assessments.forEach(a => {
       const key = a.studentId + "_" + a.page;
+      if (!assessmentByCell[key]) assessmentByCell[key] = [];
+      assessmentByCell[key].push(a);
       if (!latest[key] || (a.assessedAt || "") > (latest[key].assessedAt || "")) {
         latest[key] = a;
       }
@@ -1363,6 +1366,7 @@ $("readingClassSelect").onchange = async () => {
               input.style.background = bg;
               input.classList.toggle("red", key === "red");
               menu.remove();
+              invalidateAssessmentViews("reading");
 
             } catch (error) {
               console.error(error);
@@ -1402,13 +1406,20 @@ menu.appendChild(divider);
       deleteButton.textContent = "Menghapus...";
 
       try {
-        await deleteDoc(doc(db, "readingAssessments", existingRecord.id));
+        // Hapus berdasarkan ID dokumen yang benar-benar dibaca dari Firestore,
+        // termasuk duplikat lama untuk santri/halaman yang sama.
+        const recordsToDelete = assessmentByCell[recordKey] || [existingRecord];
+        await Promise.all(recordsToDelete.map(record =>
+          deleteDoc(doc(db, "readingAssessments", record.id))
+        ));
+        delete assessmentByCell[recordKey];
         delete latest[recordKey];
         input.textContent = "";
         input.dataset.result = "";
         input.style.background = "";
         input.classList.remove("red");
         menu.remove();
+        invalidateAssessmentViews("reading");
       } catch (error) {
         console.error(error);
         alert("Nilai gagal dihapus. Periksa koneksi internet.");
@@ -1456,31 +1467,24 @@ function getLocalMonthString() {
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
 }
 
-
 $("openWritingAssessmentBtn").onclick = () => {
   const select = $("writingClassSelect");
 
   if (select.options.length <= 1) {
     select.innerHTML = '<option value="">Pilih kelas</option>';
-
-    classes
-      .filter(kelas => kelas.name.startsWith("Kelas Jilid"))
-      .forEach(kelas => {
-        const option = document.createElement("option");
-        option.value = kelas.id;
-        option.textContent = kelas.name;
-        select.appendChild(option);
-      });
+    classes.filter(kelas => kelas.name.startsWith("Kelas Jilid")).forEach(kelas => {
+      const option = document.createElement("option");
+      option.value = kelas.id;
+      option.textContent = kelas.name;
+      select.appendChild(option);
+    });
   }
 
   if (!$("writingAssessmentMonth").value) {
     $("writingAssessmentMonth").value = getLocalMonthString();
   }
 
-  toggleAssessmentPanel(
-    "writingAssessmentView",
-    "openWritingAssessmentBtn"
-  );
+  toggleAssessmentPanel("writingAssessmentView", "openWritingAssessmentBtn");
 };
 
 async function loadWritingAssessmentTable() {
@@ -1607,6 +1611,7 @@ async function loadWritingAssessmentTable() {
             }
             delete latest[studentId + "_" + page];
             input.style.background = "";
+            invalidateAssessmentViews("writing");
           } catch (error) {
             console.error(error);
             alert("Nilai gagal dihapus. Periksa koneksi internet.");
@@ -1642,6 +1647,7 @@ async function loadWritingAssessmentTable() {
           );
 
           input.style.background = "#d9f2df";
+          invalidateAssessmentViews("writing");
         } catch (error) {
           console.error(error);
           alert("Nilai gagal disimpan. Periksa koneksi atau izin database.");
@@ -1658,6 +1664,8 @@ async function loadWritingAssessmentTable() {
       esc(error.message || "Kesalahan tidak diketahui") + "</p>";
   }
 }
+
+
 
 $("writingClassSelect").onchange = loadWritingAssessmentTable;
 $("writingAssessmentMonth").onchange = loadWritingAssessmentTable;
@@ -2871,10 +2879,28 @@ await renderDashboard();
   }
 };
 
-
 /* DASHBOARD EVALUASI PEMBELAJARAN */
 let evaluationDashboardCache = null;
 let evaluationDashboardClassOptionsReady = false;
+let evaluationDashboardStudentLists = { all:[], reading:[], writing:[], attention:[] };
+let evaluationDashboardVisibleClasses = [];
+
+// Invalidasi tampilan evaluasi setelah nilai membaca/menulis berubah.
+// Data di Firestore tetap menjadi sumber utama; dashboard dan rekap dimuat ulang.
+function invalidateAssessmentViews(type) {
+  evaluationDashboardCache = null;
+
+  const recap = type === "reading"
+    ? { result: $("readingRecapResult"), message: $("readingRecapMessage") }
+    : { result: $("writingRecapResult"), message: $("writingRecapMessage") };
+
+  if (recap.result) recap.result.innerHTML = "";
+  if (recap.message) {
+    recap.message.textContent =
+      "Data penilaian berubah. Tekan Tampilkan Rekap untuk memuat data terbaru.";
+  }
+}
+
 
 function setupEvaluationDashboardFilters() {
   const monthSelect = $("evaluationMonth");
@@ -2923,6 +2949,7 @@ function setupEvaluationDashboardFilters() {
     evaluationDashboardClassOptionsReady = true;
   }
 
+  setupEvaluationDashboardSummaryCards();
   monthSelect.onchange = () => loadEvaluationDashboard();
   classSelect.onchange = () => renderEvaluationDashboardFromCache();
   $("refreshEvaluationDashboard").onclick = () => {
@@ -2964,6 +2991,90 @@ function renderEvaluationBars(target, rows, emptyText) {
   `).join("");
 }
 
+function setupEvaluationDashboardSummaryCards() {
+  document.querySelectorAll("#evaluasiDashboardPanel .eval-stat-card[data-eval-list]").forEach(card => {
+    card.setAttribute("role", "button");
+    card.setAttribute("tabindex", "0");
+    card.setAttribute("aria-haspopup", "dialog");
+  });
+}
+
+// Event delegation: kartu tetap dapat ditekan walau dashboard dirender ulang,
+// atau fungsi setup filter dipanggil sebelum/ketika panel berganti.
+if (!document.documentElement.dataset.evalSummaryClickHandler) {
+  document.documentElement.dataset.evalSummaryClickHandler = "true";
+  document.addEventListener("click", event => {
+    const card = event.target.closest("#evaluasiDashboardPanel .eval-stat-card[data-eval-list]");
+    if (!card) return;
+    event.preventDefault();
+    showEvaluationDashboardStudents(card.dataset.evalList);
+  });
+  document.addEventListener("keydown", event => {
+    const card = event.target.closest("#evaluasiDashboardPanel .eval-stat-card[data-eval-list]");
+    if (!card || (event.key !== "Enter" && event.key !== " ")) return;
+    event.preventDefault();
+    showEvaluationDashboardStudents(card.dataset.evalList);
+  });
+}
+
+function showEvaluationDashboardStudents(type) {
+  const modal = $("attendanceStatusModal");
+  // Pastikan modal menjadi anak langsung BODY, bukan bagian panel yang dapat disembunyikan.
+  if (modal.parentElement !== document.body) document.body.appendChild(modal);
+  modal.classList.remove("hidden");
+  modal.style.setProperty("display", "flex", "important");
+  modal.style.setProperty("visibility", "visible", "important");
+  modal.style.setProperty("opacity", "1", "important");
+  const title = $("attendanceStatusTitle");
+  const list = $("attendanceStatusList");
+  const titles = {
+    all: "Daftar Santri yang Dinilai",
+    reading: "Daftar Santri dengan Hasil Membaca",
+    writing: "Daftar Santri dengan Hasil Menulis",
+    attention: "Daftar Santri Perlu Bimbingan"
+  };
+  title.textContent = titles[type] || "Daftar Santri Evaluasi";
+  list.innerHTML = '<p class="muted">Memuat daftar santri...</p>';
+  modal.classList.remove("hidden");
+
+  const matching = evaluationDashboardStudentLists[type] || [];
+  const visibleClasses = evaluationDashboardVisibleClasses || [];
+  const classOrder = [
+    "Kelas Jilid 5","Kelas Jilid 4","Kelas Jilid 3",
+    "Kelas Jilid 2","Kelas Jilid 1","Kelas Jilid Pemula"
+  ];
+  const orderedClasses = visibleClasses.slice().sort((a,b) =>
+    classOrder.indexOf(a.name) - classOrder.indexOf(b.name)
+  );
+  const grouped = orderedClasses.map(cls => ({
+    name:cls.name,
+    students:matching.filter(item => item.classId === cls.id)
+      .sort((a,b) => (a.student.name || "").localeCompare(b.student.name || "", "id"))
+  })).filter(group => group.students.length);
+
+  if (!matching.length) {
+    list.innerHTML = '<p class="muted">Tidak ada santri dalam kategori ini pada periode dan kelas yang dipilih.</p>';
+    return;
+  }
+
+  list.innerHTML = grouped.map(group => `
+    <div class="attendance-class-group">
+      <h3>${esc(group.name)} <span>${group.students.length} santri</span></h3>
+      <table class="attendance-status-table"><tbody>
+        ${group.students.map((item,index) => `
+          <tr>
+            <td>${index+1}</td>
+            <td>
+              <strong>${esc(item.student.name || "Tanpa nama")}</strong>
+              ${item.note ? '<small class="eval-list-note">'+esc(item.note)+'</small>' : ""}
+            </td>
+          </tr>
+        `).join("")}
+      </tbody></table>
+    </div>
+  `).join("");
+}
+
 function renderEvaluationDashboardFromCache() {
   if (!evaluationDashboardCache) return;
   const selectedClassId = $("evaluationClass").value;
@@ -2971,6 +3082,7 @@ function renderEvaluationDashboardFromCache() {
     .filter(c => (c.name || "").startsWith("Kelas Jilid"))
     .filter(c => canAccessAllClasses() || c.id === myClass());
   const allowedIds = new Set(visibleClasses.map(c => c.id));
+  evaluationDashboardVisibleClasses = visibleClasses.slice();
   const classIds = selectedClassId && selectedClassId !== "__all__"
     ? new Set([selectedClassId])
     : allowedIds;
@@ -3024,6 +3136,26 @@ function renderEvaluationDashboardFromCache() {
   $("evalReadingStudents").textContent = readingStudentIds.size;
   $("evalWritingStudents").textContent = writingTotals.size;
   $("evalAttentionStudents").textContent = attention.size;
+
+  const toStudentRows = ids => [...ids]
+    .map(id => activeStudentMap.get(id))
+    .filter(Boolean)
+    .map(student => ({student,classId:student.classId}));
+  const allAssessedIds = new Set([...readingStudentIds,...writingTotals.keys()]);
+  evaluationDashboardStudentLists = {
+    all:toStudentRows(allAssessedIds),
+    reading:toStudentRows(readingStudentIds),
+    writing:toStudentRows(writingTotals.keys()),
+    attention:[...attention.entries()]
+      .map(([id,issue]) => {
+        const student = activeStudentMap.get(id);
+        if (!student) return null;
+        const reasons = [];
+        if (issue.reading) reasons.push("Membaca: belum lancar");
+        if (issue.writing) reasons.push("Menulis: predikat D");
+        return {student,classId:student.classId,note:reasons.join(" · ")};
+      }).filter(Boolean)
+  };
 
   const readingColors = {
     green:"#3d9965", yellow:"#e0b83f", orange:"#e58b43", red:"#d65b5b"
@@ -3120,8 +3252,7 @@ async function loadEvaluationDashboard(force = false) {
       }))
     ]);
 
-    const writingRows = writingSnap.docs
-      .map(d=>({id:d.id,...d.data()}));
+    const writingRows = writingSnap.docs.map(d=>({id:d.id,...d.data()}));
     const uniqueWritingRows = {};
     writingRows.forEach(a=>{
       const key = a.classId + "_" + a.studentId + "_" + a.page;
@@ -3145,6 +3276,7 @@ async function loadEvaluationDashboard(force = false) {
     $("evalWritingChart").innerHTML = '<div class="eval-empty">Data belum dapat dimuat.</div>';
   }
 }
+
 
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
   document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));
@@ -5023,6 +5155,9 @@ async function showAttendanceByStatus(status) {
   title.textContent = "Santri " + status + " Hari Ini";
   list.innerHTML = '<p class="muted">Memuat data santri...</p>';
   modal.classList.remove("hidden");
+  modal.style.setProperty("display", "flex", "important");
+  modal.style.setProperty("visibility", "visible", "important");
+  modal.style.setProperty("opacity", "1", "important");
 
   try {
     const now = new Date();
@@ -5150,11 +5285,17 @@ document.querySelectorAll(
 // TUTUP JENDELA DAFTAR SANTRI
 $("closeAttendanceStatus").addEventListener("click", () => {
   $("attendanceStatusModal").classList.add("hidden");
+  $("attendanceStatusModal").style.setProperty("display", "none", "important");
+  $("attendanceStatusModal").style.removeProperty("visibility");
+  $("attendanceStatusModal").style.removeProperty("opacity");
 });
 
 $("attendanceStatusModal").addEventListener("click", event => {
   if (event.target.id === "attendanceStatusModal") {
     $("attendanceStatusModal").classList.add("hidden");
+    $("attendanceStatusModal").style.setProperty("display", "none", "important");
+    $("attendanceStatusModal").style.removeProperty("visibility");
+    $("attendanceStatusModal").style.removeProperty("opacity");
   }
 });
 // DROPDOWN CUSTOM MADIN
