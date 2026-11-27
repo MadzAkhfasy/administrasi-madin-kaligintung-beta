@@ -3309,7 +3309,7 @@ function openModule(module) {
   const tabs = document.querySelector(".tabs");
 tabs.classList.toggle(
   "hidden",
-  module === "keuangan"
+  module === "keuangan" || module === "kontrol"
 );
 
   const groups = {
@@ -3328,6 +3328,8 @@ tabs.classList.toggle(
     "printStudentsPanel",
     "backupPanel"
   ],
+
+  kontrol: [],
 
   evaluasi: [
     "evaluasiDashboardPanel",
@@ -3354,7 +3356,7 @@ tabs.classList.toggle(
 
   let target = allowed[0];
 
-  if (module === "keuangan") {
+  if (module === "keuangan" || module === "kontrol") {
     target = "modulePlaceholder";
 
     let placeholder = $("modulePlaceholder");
@@ -3368,10 +3370,8 @@ tabs.classList.toggle(
 
     placeholder.innerHTML = `
       <div class="card">
-        <h2>${module === "evaluasi"
-          ? "Evaluasi Pembelajaran Santri"
-          : "Manajemen Keuangan Madin"}</h2>
-        <p class="muted">Modul ini sedang disiapkan.</p>
+        <h2>${module === "kontrol" ? "Dashboard Kontrol Administrasi Madin" : "Manajemen Keuangan Madin"}</h2>
+        ${module === "kontrol" ? '<p class="muted">Ringkasan administrasi yang perlu ditindaklanjuti.</p><div id="controlDashboardContent"><p class="muted">Memuat ringkasan...</p></div>' : '<p class="muted">Modul ini sedang disiapkan.</p>'}
       </div>
     `;
 
@@ -3391,6 +3391,7 @@ tabs.classList.toggle(
 
   $("roleInfo").after(back);
 
+  if (module === "kontrol") loadControlDashboard();
   if (target === "studentsPanel") renderStudentList();
   if (target === "staffPanel") loadStaffProfiles();
   if (target === "evaluasiDashboardPanel") loadEvaluationDashboard();
@@ -3399,6 +3400,69 @@ tabs.classList.toggle(
 document.querySelectorAll("[data-module]").forEach(button => {
   button.onclick = () => openModule(button.dataset.module);
 });
+
+
+let controlDashboardCache = null;
+async function loadControlDashboard(force = false) {
+  const box = $("controlDashboardContent");
+  if (!box || !currentUser || !profile) return;
+  if (!force && controlDashboardCache && Date.now() - controlDashboardCache.loadedAt < 60000) {
+    renderControlDashboard(controlDashboardCache);
+    return;
+  }
+  const visibleClasses = (canAccessAllClasses() ? classes : classes.filter(c => c.id === myClass()))
+    .filter(c => (c.name || "").startsWith("Kelas Jilid"));
+  const activeStudents = students.filter(s => (s.status || "Aktif") === "Aktif" && visibleClasses.some(c => c.id === s.classId));
+  const incomplete = activeStudents.filter(s => !isStudentBiodataComplete(s));
+  const date = new Date().toLocaleDateString("sv-SE");
+  const month = date.slice(0, 7);
+  const bounds = evaluationMonthBounds(month);
+  box.innerHTML = '<p class="muted">Memeriksa absensi dan penilaian bulan berjalan...</p>';
+  try {
+    await Promise.all([loadWeeklySchedule(), loadHolidays()]);
+    const [attendanceSnap, readingSnap, writingMonthlySnap, writingLegacySnap] = await Promise.all([
+      getDocs(query(collection(db, "attendance"), where("date", "==", date))),
+      getDocs(query(collection(db, "readingAssessments"), where("assessedAt", ">=", bounds.startISO), where("assessedAt", "<", bounds.endISO))),
+      getDocs(query(collection(db, "writingAssessments"), where("assessmentMonth", ">=", month), where("assessmentMonth", "<", nextEvaluationMonth(month)))),
+      getDocs(query(collection(db, "writingAssessments"), where("assessmentDate", ">=", bounds.startDate), where("assessmentDate", "<", bounds.endDate)))
+    ]);
+    const attendanceRows = attendanceSnap.docs.map(d => d.data());
+    const readingRows = readingSnap.docs.map(d => d.data());
+    const writingRows = writingMonthlySnap.docs.map(d => d.data()).concat(writingLegacySnap.docs.map(d => d.data()));
+    const workingClasses = visibleClasses.filter(c => !isWeeklyHoliday(c.id, date) && !isSpecialHoliday(c.id, date));
+    const pendingClasses = workingClasses.filter(c => { const ids = activeStudents.filter(student => student.classId === c.id).map(student => student.id); if (!ids.length) return false; const recorded = new Set(attendanceRows.filter(a => a.classId === c.id).map(a => a.studentId)); return ids.some(id => !recorded.has(id)); });
+    const assessedReading = new Set(readingRows.map(a => a.studentId));
+    const assessedWriting = new Set(writingRows.map(a => a.studentId));
+    const missingReading = activeStudents.filter(s => !assessedReading.has(s.id));
+    const missingWriting = activeStudents.filter(s => !assessedWriting.has(s.id));
+    controlDashboardCache = {loadedAt:Date.now(),date,month,activeCount:activeStudents.length,incomplete,pendingClasses,missingReading,missingWriting};
+    renderControlDashboard(controlDashboardCache);
+  } catch (error) {
+    console.error("Dashboard kontrol gagal dimuat:", error);
+    box.innerHTML = '<p class="message error">Dashboard gagal dimuat: ' + esc(error.message) + '</p><button type="button" class="secondary full" id="refreshControlDashboard">Coba Lagi</button>';
+    $("refreshControlDashboard").onclick = () => loadControlDashboard(true);
+  }
+}
+function renderControlDashboard(data) {
+  const box = $("controlDashboardContent");
+  if (!box) return;
+  const row = (name, cls) => '<div class="control-list-row"><span>' + esc(name) + '</span><small>' + esc(cls) + '</small></div>';
+  const studentRows = list => list.length ? list.slice(0,10).map(s => row(s.name || "Tanpa nama",clsName(s.classId))).join("") + (list.length > 10 ? '<p class="muted">Dan ' + (list.length-10) + ' santri lainnya.</p>' : "") : '<p class="muted">Tidak ada santri yang perlu ditindaklanjuti.</p>';
+  const classRows = list => list.length ? list.map(c => row(c.name,"Belum mengisi")).join("") : '<p class="muted">Semua kelas terjadwal sudah mengisi absensi.</p>';
+  box.innerHTML =
+    '<div class="control-summary-grid">' +
+    '<div class="control-summary-card"><strong>' + data.activeCount + '</strong><span>Santri Aktif</span></div>' +
+    '<div class="control-summary-card is-warning"><strong>' + data.incomplete.length + '</strong><span>Biodata Belum Lengkap</span></div>' +
+    '<div class="control-summary-card ' + (data.pendingClasses.length ? "is-warning" : "is-good") + '"><strong>' + data.pendingClasses.length + '</strong><span>Kelas Belum Mengisi Absensi Hari Ini</span></div>' +
+    '<div class="control-summary-card is-warning"><strong>' + data.missingReading.length + '</strong><span>Belum Dinilai Membaca Bulan Ini</span></div>' +
+    '<div class="control-summary-card is-warning"><strong>' + data.missingWriting.length + '</strong><span>Belum Dinilai Menulis Bulan Ini</span></div></div>' +
+    '<div class="card control-detail-card"><h3>Absensi Hari Ini · ' + esc(data.date) + '</h3>' + classRows(data.pendingClasses) + '</div>' +
+    '<div class="card control-detail-card"><h3>Biodata Belum Lengkap · ' + data.incomplete.length + ' santri</h3>' + studentRows(data.incomplete) + '</div>' +
+    '<div class="card control-detail-card"><h3>Belum Dinilai Membaca · ' + esc(data.month) + '</h3>' + studentRows(data.missingReading) + '</div>' +
+    '<div class="card control-detail-card"><h3>Belum Dinilai Menulis · ' + esc(data.month) + '</h3>' + studentRows(data.missingWriting) + '</div>' +
+    '<p class="muted control-updated">Data diperbarui ' + new Date(data.loadedAt).toLocaleTimeString("id-ID") + '</p><button type="button" class="secondary full" id="refreshControlDashboard">Muat Ulang Ringkasan</button>';
+  $("refreshControlDashboard").onclick = () => loadControlDashboard(true);
+}
 
 // AKHIR NAVIGASI MODUL
 $("loadReportBtn").onclick=loadReport;
