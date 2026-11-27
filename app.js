@@ -3385,6 +3385,9 @@ tabs.classList.toggle(
     if (firstTab) firstTab.classList.add("active");
   }
 
+  // Pastikan hanya ada satu tombol kembali meskipun modul dibuka berulang.
+  document.querySelectorAll(".module-back").forEach(btn => btn.remove());
+
   let back = document.createElement("button");
   back.className = "module-back";
   back.textContent = "← Kembali ke Menu Utama";
@@ -3505,8 +3508,12 @@ function openControlFollowUp(action, studentId, classId) {
 function renderControlDashboard(data) {
   const box = $("controlDashboardContent");
   if (!box) return;
-  const row = (name, action, studentId, classId) =>
-    '<div class="control-list-row"><span>' + esc(name) + '</span><button type="button" class="control-action-btn" data-control-action="' + action + '" data-student-id="' + (studentId || "") + '" data-class-id="' + (classId || "") + '">' + (action === "attendance" ? "Buka Absensi" : "Perbaiki") + ' →</button></div>';
+  const row = (name, action, studentId, classId) => {
+    const actionButton = action === "attendance"
+      ? '<button type="button" class="control-action-btn" data-control-action="attendance" data-student-id="" data-class-id="' + (classId || "") + '">Buka Absensi →</button>'
+      : '<button type="button" class="control-action-btn control-icon-btn" aria-label="Perbaiki data ' + esc(name) + '" title="Perbaiki" data-control-action="' + action + '" data-student-id="' + (studentId || "") + '" data-class-id="' + (classId || "") + '"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg></button>';
+    return '<div class="control-list-row"><span>' + esc(name) + '</span>' + actionButton + '</div>';
+  };
   const studentRows = (list, action) => {
     if (!list.length) return '<p class="muted">Tidak ada santri yang perlu ditindaklanjuti.</p>';
     const grouped = new Map();
