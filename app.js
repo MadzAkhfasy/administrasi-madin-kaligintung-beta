@@ -3430,7 +3430,7 @@ async function loadControlDashboard(force = false) {
     const readingRows = readingSnap.docs.map(d => d.data());
     const writingRows = writingMonthlySnap.docs.map(d => d.data()).concat(writingLegacySnap.docs.map(d => d.data()));
     const workingClasses = visibleClasses.filter(c => !isWeeklyHoliday(c.id, date) && !isSpecialHoliday(c.id, date));
-    const pendingClasses = workingClasses.filter(c => !attendanceRows.some(a => a.classId === c.id));
+    const pendingClasses = workingClasses.filter(c => { const ids = activeStudents.filter(student => student.classId === c.id).map(student => student.id); if (!ids.length) return false; const recorded = new Set(attendanceRows.filter(a => a.classId === c.id).map(a => a.studentId)); return ids.some(id => !recorded.has(id)); });
     const assessedReading = new Set(readingRows.map(a => a.studentId));
     const assessedWriting = new Set(writingRows.map(a => a.studentId));
     const missingReading = activeStudents.filter(s => !assessedReading.has(s.id));
