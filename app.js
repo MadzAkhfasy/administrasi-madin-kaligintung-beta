@@ -3447,6 +3447,7 @@ async function loadControlDashboard(force = false) {
 function openControlFollowUp(action, studentId, classId) {
   if (action === "attendance") {
     openModule("absensi");
+    document.querySelector('.tab[data-tab="attendancePanel"]')?.click();
     if (canAccessAllClasses()) $("attendanceClass").value = classId;
     renderAttendance();
     $("attendancePanel").scrollIntoView({behavior:"smooth",block:"start"});
@@ -3458,6 +3459,7 @@ function openControlFollowUp(action, studentId, classId) {
       return;
     }
     openModule("data");
+    document.querySelector('.tab[data-tab="studentsPanel"]')?.click();
     $("studentSearch").value = "";
     $("studentFilterClass").value = classId || "";
     renderStudentList();
@@ -3472,6 +3474,7 @@ function openControlFollowUp(action, studentId, classId) {
   }
   if (action === "reading" || action === "writing") {
     openModule("evaluasi");
+    document.querySelector('.tab[data-tab="evaluasiPenilaianPanel"]')?.click();
     const isReading = action === "reading";
     $(isReading ? "openReadingAssessmentBtn" : "openWritingAssessmentBtn").click();
     const select = $(isReading ? "readingClassSelect" : "writingClassSelect");
