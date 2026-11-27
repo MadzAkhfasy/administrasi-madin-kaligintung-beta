@@ -2088,6 +2088,7 @@ function renderStudentList() {
   filtered.forEach(s => {
     const r = document.createElement("div");
     r.className = "list-row";
+    r.dataset.studentId = s.id;
 
     const biodataComplete = isStudentBiodataComplete(s);
 
@@ -3443,11 +3444,70 @@ async function loadControlDashboard(force = false) {
     $("refreshControlDashboard").onclick = () => loadControlDashboard(true);
   }
 }
+function openControlFollowUp(action, studentId, classId) {
+  if (action === "attendance") {
+    openModule("absensi");
+    document.querySelector('.tab[data-tab="attendancePanel"]')?.click();
+    if (canAccessAllClasses()) $("attendanceClass").value = classId;
+    renderAttendance();
+    $("attendancePanel").scrollIntoView({behavior:"smooth",block:"start"});
+    return;
+  }
+  if (action === "biodata") {
+    if (!isAdmin()) {
+      showToast("Perbaikan biodata hanya dapat dilakukan oleh admin.", true);
+      return;
+    }
+    openModule("data");
+    document.querySelector('.tab[data-tab="studentsPanel"]')?.click();
+    $("studentSearch").value = "";
+    $("studentFilterClass").value = classId || "";
+    renderStudentList();
+    const target = $("studentList").querySelector('[data-student-id="' + CSS.escape(studentId) + '"]');
+    if (target) {
+      target.scrollIntoView({behavior:"smooth",block:"center"});
+      target.querySelector(".edit-btn")?.click();
+    } else {
+      showToast("Data santri tidak ditemukan pada daftar kelas.", true);
+    }
+    return;
+  }
+  if (action === "reading" || action === "writing") {
+    openModule("evaluasi");
+    document.querySelector('.tab[data-tab="evaluasiPenilaianPanel"]')?.click();
+    const isReading = action === "reading";
+    $(isReading ? "openReadingAssessmentBtn" : "openWritingAssessmentBtn").click();
+    const select = $(isReading ? "readingClassSelect" : "writingClassSelect");
+    select.value = classId || "";
+    if (!isReading) $("writingAssessmentMonth").value = getLocalMonthString();
+    select.dispatchEvent(new Event("change"));
+    const listId = isReading ? "readingStudentList" : "writingStudentList";
+    const selector = isReading ? '.reading-score[data-student="' + CSS.escape(studentId) + '"]' : '.writing-score[data-student="' + CSS.escape(studentId) + '"]';
+    const list = $(listId);
+    list.scrollIntoView({behavior:"smooth",block:"start"});
+    const waitForStudent = (attempt = 0) => {
+      const target = list.querySelector(selector);
+      if (target) {
+        const row = target.closest("tr");
+        row?.classList.add("control-target-highlight");
+        row?.scrollIntoView({behavior:"smooth",block:"center",inline:"nearest"});
+        setTimeout(() => row?.classList.remove("control-target-highlight"), 3500);
+      } else if (attempt < 30) {
+        setTimeout(() => waitForStudent(attempt + 1), 200);
+      } else {
+        showToast("Santri belum ditemukan pada tabel penilaian.", true);
+      }
+    };
+    waitForStudent();
+    $("evaluasiPenilaianPanel").scrollIntoView({behavior:"smooth",block:"start"});
+  }
+}
 function renderControlDashboard(data) {
   const box = $("controlDashboardContent");
   if (!box) return;
-  const row = name => '<div class="control-list-row"><span>' + esc(name) + '</span></div>';
-  const studentRows = list => {
+  const row = (name, action, studentId, classId) =>
+    '<div class="control-list-row"><span>' + esc(name) + '</span><button type="button" class="control-action-btn" data-control-action="' + action + '" data-student-id="' + (studentId || "") + '" data-class-id="' + (classId || "") + '">' + (action === "attendance" ? "Buka Absensi" : "Perbaiki") + ' →</button></div>';
+  const studentRows = (list, action) => {
     if (!list.length) return '<p class="muted">Tidak ada santri yang perlu ditindaklanjuti.</p>';
     const grouped = new Map();
     list.forEach(student => {
@@ -3455,15 +3515,15 @@ function renderControlDashboard(data) {
       if (!grouped.has(classId)) grouped.set(classId, []);
       grouped.get(classId).push(student);
     });
-    const orderedGroups = classes.filter(cls => grouped.has(cls.id)).map(cls => [cls.name || "Kelas tanpa nama", grouped.get(cls.id)]);
-    if (grouped.has("__unknown__")) orderedGroups.push(["Kelas belum terdata", grouped.get("__unknown__")]);
-    return orderedGroups.map(([className, studentsInClass]) =>
+    const orderedGroups = classes.filter(cls => grouped.has(cls.id)).map(cls => [cls.id, cls.name || "Kelas tanpa nama", grouped.get(cls.id)]);
+    if (grouped.has("__unknown__")) orderedGroups.push(["", "Kelas belum terdata", grouped.get("__unknown__")]);
+    return orderedGroups.map(([classId, className, studentsInClass]) =>
       '<div class="control-class-group"><div class="control-class-heading"><strong>' + esc(className) + '</strong><span>' + studentsInClass.length + ' santri</span></div>' +
-      studentsInClass.map(student => row(student.name || "Tanpa nama")).join("") +
+      studentsInClass.map(student => row(student.name || "Tanpa nama", action, student.id, student.classId)).join("") +
       '</div>'
     ).join("");
   };
-  const classRows = list => list.length ? list.map(c => row(c.name)).join("") : '<p class="muted">Semua kelas terjadwal sudah mengisi absensi.</p>';
+  const classRows = list => list.length ? list.map(c => row(c.name, "attendance", "", c.id)).join("") : '<p class="muted">Semua kelas terjadwal sudah mengisi absensi.</p>';
   const section = (title, count, content, stateClass = "") =>
     '<details class="card control-detail-card ' + stateClass + '">' +
     '<summary><span>' + title + '</span><strong>' + count + '</strong></summary>' +
@@ -3476,10 +3536,13 @@ function renderControlDashboard(data) {
     '<div class="control-summary-card is-warning"><strong>' + data.missingReading.length + '</strong><span>Belum Dinilai Membaca Bulan Ini</span></div>' +
     '<div class="control-summary-card is-warning"><strong>' + data.missingWriting.length + '</strong><span>Belum Dinilai Menulis Bulan Ini</span></div></div>' +
     section('Absensi Hari Ini · ' + esc(data.date), data.pendingClasses.length, classRows(data.pendingClasses), data.pendingClasses.length ? "is-warning" : "is-good") +
-    section("Biodata Belum Lengkap", data.incomplete.length + " santri", studentRows(data.incomplete), data.incomplete.length ? "is-warning" : "is-good") +
-    section('Belum Dinilai Membaca · ' + esc(data.month), data.missingReading.length + " santri", studentRows(data.missingReading), data.missingReading.length ? "is-warning" : "is-good") +
-    section('Belum Dinilai Menulis · ' + esc(data.month), data.missingWriting.length + " santri", studentRows(data.missingWriting), data.missingWriting.length ? "is-warning" : "is-good") +
+    section("Biodata Belum Lengkap", data.incomplete.length + " santri", studentRows(data.incomplete, "biodata"), data.incomplete.length ? "is-warning" : "is-good") +
+    section('Belum Dinilai Membaca · ' + esc(data.month), data.missingReading.length + " santri", studentRows(data.missingReading, "reading"), data.missingReading.length ? "is-warning" : "is-good") +
+    section('Belum Dinilai Menulis · ' + esc(data.month), data.missingWriting.length + " santri", studentRows(data.missingWriting, "writing"), data.missingWriting.length ? "is-warning" : "is-good") +
     '<p class="muted control-updated">Data diperbarui ' + new Date(data.loadedAt).toLocaleTimeString("id-ID") + '</p><button type="button" class="secondary full" id="refreshControlDashboard">Muat Ulang Ringkasan</button>';
+  box.querySelectorAll("[data-control-action]").forEach(button => {
+    button.addEventListener("click", () => openControlFollowUp(button.dataset.controlAction, button.dataset.studentId, button.dataset.classId));
+  });
   $("refreshControlDashboard").onclick = () => loadControlDashboard(true);
 }
 
